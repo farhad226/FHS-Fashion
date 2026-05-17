@@ -1,10 +1,11 @@
-import { Plus, Search, Filter, MoreVertical, Edit2, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { Plus, Search, Filter, MoreVertical, Edit2, Trash2, X, Upload } from 'lucide-react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../../lib/utils';
+import { useToast } from '../../context/ToastContext';
 
 // Using mock data for now
-const mockProducts = [
+const initialProducts = [
   { id: '1', name: 'Premium Oxford Shirt', category: 'Shirts', price: '$89.00', stock: 45, status: 'Active' },
   { id: '2', name: 'Heavyweight Cotton Tee', category: 'T-Shirts', price: '$45.00', stock: 12, status: 'Low Stock' },
   { id: '3', name: 'Tapered Wool Trousers', category: 'Pants', price: '$129.00', stock: 0, status: 'Out of Stock' },
@@ -12,7 +13,147 @@ const mockProducts = [
 ];
 
 export function ProductManagement() {
+  const [products, setProducts] = useState(initialProducts);
   const [isAdding, setIsAdding] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const { showToast } = useToast();
+
+  // Form State
+  const [productName, setProductName] = useState('');
+  const [category, setCategory] = useState('Shirts');
+  const [price, setPrice] = useState('');
+  const [stock, setStock] = useState('');
+  const [options, setOptions] = useState([{ name: '', values: '' }]);
+  const [variants, setVariants] = useState<{id: string, color: string, colorHex?: string, sizes: string, image: string}[]>([{ id: '1', color: '', colorHex: '#000000', sizes: '', image: '' }]);
+  const [images, setImages] = useState<string[]>([]);
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const resetForm = () => {
+    setProductName('');
+    setCategory('Shirts');
+    setPrice('');
+    setStock('');
+    setOptions([{ name: '', values: '' }]);
+    setVariants([{ id: '1', color: '', colorHex: '#000000', sizes: '', image: '' }]);
+    setImages([]);
+    setEditingId(null);
+  };
+
+  const handleAddOption = () => {
+    setOptions([...options, { name: '', values: '' }]);
+  };
+
+  const handleOptionChange = (index: number, field: 'name' | 'values', value: string) => {
+    const newOptions = [...options];
+    newOptions[index][field] = value;
+    setOptions(newOptions);
+  };
+
+  const handleRemoveOption = (index: number) => {
+    const newOptions = options.filter((_, i) => i !== index);
+    setOptions(newOptions);
+  };
+
+  const handleAddVariant = () => {
+    setVariants([...variants, { id: Date.now().toString(), color: '', colorHex: '#000000', sizes: '', image: '' }]);
+  };
+
+  const handleVariantChange = (id: string, field: 'color' | 'sizes' | 'image' | 'colorHex', value: string) => {
+    setVariants(variants.map(v => v.id === id ? { ...v, [field]: value } : v));
+  };
+
+  const handleRemoveVariant = (id: string) => {
+    setVariants(variants.filter(v => v.id !== id));
+  };
+
+  const handleVariantImageUpload = (id: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          handleVariantChange(id, 'image', reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    
+    files.forEach(file => {
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (typeof reader.result === 'string') {
+            setImages(prev => [...prev, reader.result as string]);
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSaveProduct = () => {
+    if (!productName || !price) {
+      showToast('Please provide at least a product name and price', 'error');
+      return;
+    }
+
+    if (editingId) {
+      setProducts(products.map(p => {
+        if (p.id === editingId) {
+          return {
+            ...p,
+            name: productName,
+            category: category,
+            price: `$${parseFloat(price.replace('$', '') || '0').toFixed(2)}`,
+            stock: parseInt(stock || '0'),
+            status: parseInt(stock || '0') > 10 ? 'Active' : (parseInt(stock || '0') > 0 ? 'Low Stock' : 'Out of Stock')
+          };
+        }
+        return p;
+      }));
+      showToast('Product updated successfully!', 'success');
+    } else {
+      const newProduct = {
+        id: (products.length + 1).toString(),
+        name: productName,
+        category: category,
+        price: `$${parseFloat(price.replace('$', '') || '0').toFixed(2)}`,
+        stock: parseInt(stock || '0'),
+        status: parseInt(stock || '0') > 10 ? 'Active' : (parseInt(stock || '0') > 0 ? 'Low Stock' : 'Out of Stock')
+      };
+      setProducts(prev => [newProduct, ...prev]);
+      showToast('Product added successfully!', 'success');
+    }
+
+    setIsAdding(false);
+    resetForm();
+  };
+
+  const handleEdit = (product: any) => {
+    setProductName(product.name);
+    setCategory(product.category);
+    setPrice(product.price.replace('$', ''));
+    setStock(product.stock.toString());
+    setOptions([{ name: '', values: '' }]); 
+    setVariants([{ id: '1', color: '', colorHex: '#000000', sizes: '', image: '' }]);
+    setImages([]);
+    setEditingId(product.id);
+    setIsAdding(true);
+  };
+
+  const handleDelete = (id: string) => {
+    setProducts(products.filter(p => p.id !== id));
+    showToast('Product deleted', 'success');
+  };
 
   return (
     <div className="p-[15px] md:p-10 max-w-7xl mx-auto space-y-6 md:space-y-8">
@@ -22,7 +163,10 @@ export function ProductManagement() {
           <p className="text-black/50 text-sm font-medium mt-2">Manage your inventory, prices, and variants.</p>
         </div>
         <button 
-          onClick={() => setIsAdding(true)}
+          onClick={() => {
+            resetForm();
+            setIsAdding(true);
+          }}
           className="bg-black text-white px-6 py-3 text-sm font-bold flex items-center space-x-2 rounded-xl hover:bg-black/80 transition-colors"
         >
           <Plus className="w-5 h-5" />
@@ -59,7 +203,7 @@ export function ProductManagement() {
               </tr>
             </thead>
             <tbody>
-              {mockProducts.map((p) => (
+              {products.map((p) => (
                 <tr key={p.id} className="group border-b border-black/[0.03] hover:bg-[#F9F9F9] transition-colors last:border-0">
                   <td className="px-6 py-4">
                     <div className="flex items-center space-x-4">
@@ -90,10 +234,16 @@ export function ProductManagement() {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end space-x-2">
-                       <button className="p-2 text-black/40 hover:text-black hover:bg-black/5 rounded-lg transition-colors">
+                       <button 
+                        onClick={() => handleEdit(p)}
+                        className="p-2 text-black/40 hover:text-black hover:bg-black/5 rounded-lg transition-colors"
+                       >
                         <Edit2 className="w-4 h-4" />
                        </button>
-                      <button className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                      <button 
+                        onClick={() => handleDelete(p.id)}
+                        className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -137,7 +287,13 @@ export function ProductManagement() {
                   <div className="space-y-4">
                     <div>
                       <label className="text-[10px] uppercase font-bold tracking-widest mb-2 block">Product Name</label>
-                      <input type="text" className="w-full bg-white border border-black/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors" placeholder="e.g., Premium Oxford Shirt" />
+                      <input 
+                        type="text" 
+                        value={productName}
+                        onChange={(e) => setProductName(e.target.value)}
+                        className="w-full bg-white border border-black/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors" 
+                        placeholder="e.g., Premium Oxford Shirt" 
+                      />
                     </div>
                     <div>
                       <div className="flex justify-between items-center mb-2">
@@ -155,7 +311,13 @@ export function ProductManagement() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="text-[10px] uppercase font-bold tracking-widest mb-2 block">Regular Price</label>
-                      <input type="number" className="w-full bg-white border border-black/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors" placeholder="$0.00" />
+                      <input 
+                        type="number" 
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                        className="w-full bg-white border border-black/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors" 
+                        placeholder="0.00" 
+                      />
                     </div>
                     <div>
                       <label className="text-[10px] uppercase font-bold tracking-widest mb-2 block">Sale Price</label>
@@ -167,7 +329,13 @@ export function ProductManagement() {
                     </div>
                     <div>
                       <label className="text-[10px] uppercase font-bold tracking-widest mb-2 block">Stock Quantity</label>
-                      <input type="number" className="w-full bg-white border border-black/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors" placeholder="0" />
+                      <input 
+                        type="number" 
+                        value={stock}
+                        onChange={(e) => setStock(e.target.value)}
+                        className="w-full bg-white border border-black/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors" 
+                        placeholder="0" 
+                      />
                     </div>
                   </div>
                 </div>
@@ -178,21 +346,99 @@ export function ProductManagement() {
                   <div className="space-y-4">
                     <div>
                       <label className="text-[10px] uppercase font-bold tracking-widest mb-2 block">Category</label>
-                      <select className="w-full bg-white border border-black/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors appearance-none">
-                        <option>Shirts</option>
-                        <option>T-Shirts</option>
-                        <option>Pants</option>
-                        <option>Accessories</option>
-                      </select>
+                      <input 
+                        type="text" 
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        list="categories"
+                        className="w-full bg-white border border-black/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors"
+                        placeholder="Select or type a custom category"
+                      />
+                      <datalist id="categories">
+                        <option value="Shirts" />
+                        <option value="T-Shirts" />
+                        <option value="Pants" />
+                        <option value="Accessories" />
+                      </datalist>
                     </div>
                     <div>
-                      <label className="text-[10px] uppercase font-bold tracking-widest mb-2 block">Variants (Colors/Sizes)</label>
-                      <div className="border border-black/10 rounded-xl p-4 flex flex-col gap-2 bg-[#F9F9F9]">
-                        <div className="flex gap-2">
-                          <input type="text" placeholder="Option (e.g. Size)" className="flex-1 bg-white border border-black/10 rounded-lg px-3 py-2 text-sm focus:outline-none" />
-                          <input type="text" placeholder="Values (e.g. S, M, L)" className="flex-[2] bg-white border border-black/10 rounded-lg px-3 py-2 text-sm focus:outline-none" />
-                        </div>
-                        <button className="text-left text-[10px] font-bold text-black/50 hover:text-black transition-colors mt-2 uppercase tracking-widest">+ Add another option</button>
+                      <label className="text-[10px] uppercase font-bold tracking-widest mb-2 block">Variants (Colors & Sizes)</label>
+                      <div className="border border-black/10 rounded-xl p-4 flex flex-col gap-4 bg-[#F9F9F9]">
+                        {variants.map((v) => (
+                          <div key={v.id} className="flex flex-col gap-4 bg-white p-4 rounded-xl border border-black/5 relative">
+                            {variants.length > 1 && (
+                              <button 
+                                onClick={() => handleRemoveVariant(v.id)}
+                                className="absolute top-4 right-4 p-1 text-black/40 hover:text-red-500 rounded-lg transition-colors"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            )}
+                            
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mr-6 sm:mr-8">
+                              <div>
+                                <label className="text-[10px] uppercase font-bold tracking-widest mb-1 block text-black/60">Color</label>
+                                <div className="flex gap-2">
+                                  <input 
+                                    type="color" 
+                                    value={v.colorHex || '#000000'}
+                                    onChange={(e) => handleVariantChange(v.id, 'colorHex', e.target.value as any)}
+                                    className="w-[10%] h-[38px] min-w-[38px] p-0 border-0 rounded-lg cursor-pointer shrink-0 bg-transparent" 
+                                  />
+                                  <input 
+                                    type="text" 
+                                    value={v.color}
+                                    onChange={(e) => handleVariantChange(v.id, 'color', e.target.value)}
+                                    placeholder="Color Name (e.g. Navy)" 
+                                    className="w-full bg-[#f9f9f9] border border-black/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-black transition-colors" 
+                                  />
+                                </div>
+                              </div>
+                              <div>
+                                <label className="text-[10px] uppercase font-bold tracking-widest mb-1 block text-black/60">Sizes (comma separated)</label>
+                                <input 
+                                  type="text" 
+                                  value={v.sizes}
+                                  onChange={(e) => handleVariantChange(v.id, 'sizes', e.target.value)}
+                                  placeholder="e.g. S, M, L, XL" 
+                                  className="w-full bg-[#f9f9f9] border border-black/10 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-black transition-colors" 
+                                />
+                              </div>
+                            </div>
+                            
+                            <div>
+                               <label className="text-[10px] uppercase font-bold tracking-widest mb-2 block text-black/60">Variant Image</label>
+                               {v.image ? (
+                                 <div className="relative w-20 h-20 rounded-lg overflow-hidden border border-black/10 group">
+                                    <img src={v.image} alt="Variant" className="w-full h-full object-cover" />
+                                    <button 
+                                      onClick={() => handleVariantChange(v.id, 'image', '')}
+                                      className="absolute inset-0 bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                    >
+                                      <X className="w-4 h-4" />
+                                    </button>
+                                 </div>
+                               ) : (
+                                 <label className="w-20 h-20 border-2 border-dashed border-black/10 rounded-lg flex flex-col items-center justify-center bg-[#F9F9F9] hover:bg-black/5 cursor-pointer transition-colors text-black/40">
+                                    <Upload className="w-4 h-4 mb-1" />
+                                    <span className="text-[8px] font-bold uppercase tracking-widest text-center px-1">Upload Image</span>
+                                    <input 
+                                      type="file" 
+                                      className="hidden" 
+                                      accept="image/*" 
+                                      onChange={(e) => handleVariantImageUpload(v.id, e)} 
+                                    />
+                                 </label>
+                               )}
+                            </div>
+                          </div>
+                        ))}
+                        <button 
+                          onClick={handleAddVariant}
+                          className="w-fit text-left text-[10px] font-bold text-black/50 hover:text-black transition-colors mt-2 uppercase tracking-widest"
+                        >
+                          + Add another variant
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -204,9 +450,37 @@ export function ProductManagement() {
                   <div className="space-y-4">
                     <div>
                       <label className="text-[10px] uppercase font-bold tracking-widest mb-2 block">Product Images</label>
-                      <div className="w-full h-32 border-2 border-dashed border-black/10 rounded-xl flex items-center justify-center bg-[#F9F9F9] hover:bg-black/5 cursor-pointer transition-colors text-black/40">
-                        <span className="text-[10px] font-bold uppercase tracking-widest">+ Click to upload or drag & drop</span>
+                      <div 
+                        onClick={() => fileInputRef.current?.click()}
+                        className="w-full h-32 border-2 border-dashed border-black/10 rounded-xl flex flex-col items-center justify-center bg-[#F9F9F9] hover:bg-black/5 cursor-pointer transition-colors text-black/40 mb-4"
+                      >
+                        <Upload className="w-6 h-6 mb-2" />
+                        <span className="text-[10px] font-bold uppercase tracking-widest">Click to upload images</span>
+                        <input 
+                          type="file" 
+                          ref={fileInputRef} 
+                          className="hidden" 
+                          accept="image/*" 
+                          multiple 
+                          onChange={handleImageUpload} 
+                        />
                       </div>
+                      
+                      {images.length > 0 && (
+                        <div className="flex gap-4 overflow-x-auto pb-2">
+                          {images.map((src, idx) => (
+                            <div key={idx} className="relative w-24 h-24 flex-shrink-0 rounded-xl overflow-hidden border border-black/10 group">
+                              <img src={src} alt={`Product ${idx}`} className="w-full h-full object-cover" />
+                              <button 
+                                onClick={() => handleRemoveImage(idx)}
+                                className="absolute top-1 right-1 p-1 bg-black/50 hover:bg-red-500 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                     <div>
                       <label className="text-[10px] uppercase font-bold tracking-widest mb-2 block">Meta Title (SEO)</label>
@@ -226,7 +500,10 @@ export function ProductManagement() {
                 >
                   Cancel
                 </button>
-                <button className="px-6 py-3 rounded-xl bg-black text-white text-sm font-bold transition-colors">
+                <button 
+                  onClick={handleSaveProduct}
+                  className="px-6 py-3 rounded-xl bg-black text-white text-sm font-bold hover:bg-black/80 transition-colors"
+                >
                   Save Product
                 </button>
               </div>

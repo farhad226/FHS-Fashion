@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import { ArrowUpRight, ArrowDownRight, Package, Users, DollarSign, Activity, Eye, ShoppingCart, CreditCard, ChevronRight } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -12,21 +13,68 @@ const data = [
   { name: 'Sun', revenue: 7490, orders: 55 },
 ];
 
-const trafficData = [
-  { name: 'Direct', value: 400 },
-  { name: 'Social', value: 300 },
-  { name: 'Organic', value: 300 },
-  { name: 'Referral', value: 200 },
-];
-
 const trafficColors = ['#000000', '#444444', '#888888', '#CCCCCC'];
 
 export function Overview() {
+  const [liveData, setLiveData] = useState({
+    revenue: 37550,
+    activeOrders: 262,
+    customers: 1490,
+    todaySales: 4290,
+    activeUsers: 124,
+    productViews: 12490,
+    addToCart: 3842,
+    checkoutInitiated: 1240,
+    purchased: 400,
+    trafficDirect: 400,
+    trafficSocial: 300,
+    trafficOrganic: 300,
+    trafficReferral: 200,
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLiveData(prev => {
+        const dViews = Math.floor(Math.random() * 5);
+        const dCart = Math.random() > 0.6 ? Math.floor(Math.random() * 2) : 0;
+        const dCheckout = Math.random() > 0.8 ? 1 : 0;
+        const dPurchased = Math.random() > 0.9 ? 1 : 0;
+        const dUsers = Math.floor(Math.random() * 7) - 3;
+        
+        return {
+          ...prev,
+          activeUsers: Math.max(50, prev.activeUsers + dUsers),
+          productViews: prev.productViews + dViews,
+          addToCart: prev.addToCart + dCart,
+          checkoutInitiated: prev.checkoutInitiated + dCheckout,
+          purchased: prev.purchased + dPurchased,
+          revenue: prev.revenue + dPurchased * 89,
+          todaySales: prev.todaySales + dPurchased * 89,
+          activeOrders: prev.activeOrders + dPurchased,
+          customers: prev.customers + (Math.random() > 0.9 ? 1 : 0),
+          trafficDirect: prev.trafficDirect + Math.floor(Math.random() * 3),
+          trafficSocial: prev.trafficSocial + (Math.random() > 0.5 ? 1 : 0),
+          trafficOrganic: prev.trafficOrganic + (Math.random() > 0.7 ? 1 : 0),
+          trafficReferral: prev.trafficReferral + (Math.random() > 0.8 ? 1 : 0),
+        };
+      });
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const stats = [
-    { name: 'Total Revenue', value: '$37,550', change: '+12.5%', trend: 'up', icon: DollarSign },
-    { name: 'Active Orders', value: '262', change: '+4.2%', trend: 'up', icon: Package },
-    { name: 'Customers', value: '1,490', change: '+8.1%', trend: 'up', icon: Users },
-    { name: 'Conversion Rate', value: '3.2%', change: '-0.4%', trend: 'down', icon: Activity },
+    { name: 'Total Revenue', value: `$${liveData.revenue.toLocaleString()}`, change: '+12.5%', trend: 'up', icon: DollarSign },
+    { name: 'Active Orders', value: liveData.activeOrders.toLocaleString(), change: '+4.2%', trend: 'up', icon: Package },
+    { name: 'Customers', value: liveData.customers.toLocaleString(), change: '+8.1%', trend: 'up', icon: Users },
+    { name: 'Conversion Rate', value: ((liveData.purchased / liveData.productViews) * 100).toFixed(1) + '%', change: '+0.1%', trend: 'up', icon: Activity },
+  ];
+
+  const trafficData = [
+    { name: 'Direct', value: liveData.trafficDirect },
+    { name: 'Social', value: liveData.trafficSocial },
+    { name: 'Organic', value: liveData.trafficOrganic },
+    { name: 'Referral', value: liveData.trafficReferral },
   ];
 
   return (
@@ -39,14 +87,14 @@ export function Overview() {
         <div className="flex bg-white px-6 py-3 rounded-2xl shadow-sm border border-black/5 space-x-6">
           <div className="text-center">
             <p className="text-[10px] uppercase font-bold text-black/40 tracking-widest">Today's Sales</p>
-            <p className="text-xl font-black">$4,290</p>
+            <p className="text-xl font-black">${liveData.todaySales.toLocaleString()}</p>
           </div>
           <div className="w-[1px] bg-black/10"></div>
           <div className="text-center">
              <p className="text-[10px] uppercase font-bold text-black/40 tracking-widest">Active Users</p>
              <p className="text-xl font-black tracking-tighter">
                 <span className="w-2 h-2 rounded-full bg-green-500 inline-block mr-2 animate-pulse"></span>
-                124
+                {liveData.activeUsers}
              </p>
           </div>
         </div>
@@ -86,7 +134,7 @@ export function Overview() {
               <div className="w-16 h-16 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center mb-4">
                 <Eye className="w-8 h-8" />
               </div>
-              <p className="text-2xl font-black">12,490</p>
+              <p className="text-2xl font-black">{liveData.productViews.toLocaleString()}</p>
               <p className="text-[10px] uppercase tracking-widest font-bold text-black/40">Product Views</p>
             </div>
             <ChevronRight className="w-8 h-8 text-black/20 hidden md:block" />
@@ -95,9 +143,9 @@ export function Overview() {
               <div className="w-16 h-16 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center mb-4">
                 <ShoppingCart className="w-8 h-8" />
               </div>
-              <p className="text-2xl font-black">3,842</p>
+              <p className="text-2xl font-black">{liveData.addToCart.toLocaleString()}</p>
               <p className="text-[10px] uppercase tracking-widest font-bold text-black/40">AddToCart</p>
-              <p className="text-[10px] font-bold text-black mt-2 bg-black/5 px-2 py-1 rounded-full">30.7%</p>
+              <p className="text-[10px] font-bold text-black mt-2 bg-black/5 px-2 py-1 rounded-full">{((liveData.addToCart / liveData.productViews) * 100).toFixed(1)}%</p>
             </div>
             <ChevronRight className="w-8 h-8 text-black/20 hidden md:block" />
 
@@ -105,9 +153,9 @@ export function Overview() {
               <div className="w-16 h-16 rounded-2xl bg-purple-50 text-purple-500 flex items-center justify-center mb-4">
                 <CreditCard className="w-8 h-8" />
               </div>
-              <p className="text-2xl font-black">1,240</p>
+              <p className="text-2xl font-black">{liveData.checkoutInitiated.toLocaleString()}</p>
               <p className="text-[10px] uppercase tracking-widest font-bold text-black/40">Checkout Initiated</p>
-              <p className="text-[10px] font-bold text-black mt-2 bg-black/5 px-2 py-1 rounded-full">32.2%</p>
+              <p className="text-[10px] font-bold text-black mt-2 bg-black/5 px-2 py-1 rounded-full">{((liveData.checkoutInitiated / liveData.addToCart) * 100).toFixed(1)}%</p>
             </div>
             <ChevronRight className="w-8 h-8 text-black/20 hidden md:block" />
 
@@ -115,9 +163,9 @@ export function Overview() {
               <div className="w-16 h-16 rounded-2xl bg-green-50 text-green-500 flex items-center justify-center mb-4">
                 <Package className="w-8 h-8" />
               </div>
-              <p className="text-2xl font-black">400</p>
+              <p className="text-2xl font-black">{liveData.purchased.toLocaleString()}</p>
               <p className="text-[10px] uppercase tracking-widest font-bold text-black/40">Purchased</p>
-              <p className="text-[10px] font-bold text-black mt-2 bg-black/5 px-2 py-1 rounded-full">32.2%</p>
+              <p className="text-[10px] font-bold text-black mt-2 bg-black/5 px-2 py-1 rounded-full">{((liveData.purchased / liveData.checkoutInitiated) * 100).toFixed(1)}%</p>
             </div>
           </div>
         </div>
