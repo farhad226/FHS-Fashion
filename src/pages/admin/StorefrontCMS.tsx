@@ -110,10 +110,40 @@ export function StorefrontCMS() {
     setFormData(prev => ({ ...prev, blogSection: { ...prev.blogSection, [field]: value } }));
   };
 
+  const updateBlogFeaturedImage = (value: string) => {
+    setFormData(prev => ({ ...prev, blogSection: { ...prev.blogSection, featuredImage: value } }));
+  };
+
+  const handleBlogFeaturedImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          updateBlogFeaturedImage(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleBlogPostChange = (index: number, field: keyof CMSData['blogPosts'][0], value: any) => {
     const newPosts = [...formData.blogPosts];
     newPosts[index] = { ...newPosts[index], [field]: value };
     setFormData(prev => ({ ...prev, blogPosts: newPosts }));
+  };
+
+  const handleBlogPostImageUpload = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          handleBlogPostChange(index, 'image', reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleHomeCategoryChange = (index: number, field: string, value: string) => {
@@ -605,15 +635,51 @@ export function StorefrontCMS() {
                       <input type="text" className="w-full bg-[#F9F9F9] border border-black/10 rounded-xl px-4 py-3 text-sm" value={formData.blogSection.subheading} onChange={(e) => updateBlog('subheading', e.target.value)} />
                     </div>
                   </div>
+                  <div>
+                    <label className="text-[10px] uppercase font-bold tracking-widest mb-2 flex items-center space-x-2">
+                       <ImageIcon className="w-4 h-4" /> <span>Featured Image</span>
+                    </label>
+                    <div className="flex gap-4 items-center mb-4">
+                      <input 
+                        type="text" 
+                        className="flex-1 bg-[#F9F9F9] border border-black/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors" 
+                        value={formData.blogSection.featuredImage}
+                        onChange={(e) => updateBlogFeaturedImage(e.target.value)}
+                        placeholder="Paste image URL..."
+                      />
+                      <span className="text-xs uppercase font-bold text-black/50">OR</span>
+                      <label className="cursor-pointer bg-black text-white px-6 py-3 rounded-xl text-[10px] uppercase font-bold tracking-widest hover:bg-black/80 transition-colors whitespace-nowrap">
+                        Upload
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleBlogFeaturedImageUpload}
+                        />
+                      </label>
+                    </div>
+                    {formData.blogSection.featuredImage && (
+                      <div className="mt-4 rounded-xl overflow-hidden h-48 border border-black/10 shadow-sm w-full md:w-1/2">
+                        <img src={formData.blogSection.featuredImage} alt="Featured Preview" className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                  </div>
                 </div>
                 
                 <div className="mt-12 space-y-6">
                   <h4 className="text-md font-bold uppercase tracking-tight">Blog Posts List</h4>
                   {formData.blogPosts.map((p, index) => (
                     <div key={p.id} className="border border-black/5 p-4 rounded-xl space-y-3">
-                      <input type="text" className="w-full bg-transparent font-bold text-sm" value={p.title} onChange={(e) => handleBlogPostChange(index, 'title', e.target.value)} />
-                      <input type="text" className="w-full bg-transparent text-xs text-black/50" value={p.date} onChange={(e) => handleBlogPostChange(index, 'date', e.target.value)} />
-                      <textarea className="w-full bg-transparent text-sm" value={p.description} onChange={(e) => handleBlogPostChange(index, 'description', e.target.value)} />
+                      <div className="flex gap-4 items-center">
+                        <img src={p.image} className="w-16 h-12 rounded-lg object-cover border border-black/10" alt="post" />
+                        <label className="cursor-pointer bg-black text-white px-3 py-1.5 rounded-lg text-[9px] uppercase font-bold tracking-widest hover:bg-black/80">
+                          Edit Image
+                          <input type="file" accept="image/*" className="hidden" onChange={(e) => handleBlogPostImageUpload(index, e)} />
+                        </label>
+                      </div>
+                      <input type="text" className="w-full bg-transparent font-bold text-sm border-none focus:outline-none focus:ring-0" value={p.title} onChange={(e) => handleBlogPostChange(index, 'title', e.target.value)} />
+                      <input type="text" className="w-full bg-transparent text-xs text-black/50 border-none focus:outline-none focus:ring-0" value={p.date} onChange={(e) => handleBlogPostChange(index, 'date', e.target.value)} />
+                      <textarea className="w-full bg-transparent text-sm border-none focus:outline-none focus:ring-0" value={p.description} onChange={(e) => handleBlogPostChange(index, 'description', e.target.value)} />
                     </div>
                   ))}
                 </div>

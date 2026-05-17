@@ -102,7 +102,7 @@ export function ProductManagement() {
 
   const handleSaveProduct = () => {
     if (!productName || !price) {
-      showToast('Please provide at least a product name and price', 'error');
+      showToast('Please provide at least a product name and price');
       return;
     }
 
@@ -120,7 +120,7 @@ export function ProductManagement() {
         }
         return p;
       }));
-      showToast('Product updated successfully!', 'success');
+      showToast('Product updated successfully!');
     } else {
       const newProduct = {
         id: (products.length + 1).toString(),
@@ -131,7 +131,7 @@ export function ProductManagement() {
         status: parseInt(stock || '0') > 10 ? 'Active' : (parseInt(stock || '0') > 0 ? 'Low Stock' : 'Out of Stock')
       };
       setProducts(prev => [newProduct, ...prev]);
-      showToast('Product added successfully!', 'success');
+      showToast('Product added successfully!');
     }
 
     setIsAdding(false);
@@ -152,7 +152,7 @@ export function ProductManagement() {
 
   const handleDelete = (id: string) => {
     setProducts(products.filter(p => p.id !== id));
-    showToast('Product deleted', 'success');
+    showToast('Product deleted');
   };
 
   return (

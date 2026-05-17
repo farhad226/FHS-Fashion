@@ -111,42 +111,12 @@ export function Home() {
         </div>
       </section>
 
-      {/* Flash Sale Bar */}
-      <section className="bg-[#111] text-white py-12 border-t border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 md:px-12 flex flex-col lg:flex-row items-center justify-between gap-8">
-          
-          {/* Text Section */}
-          <div className="text-center lg:text-left space-y-2">
-            <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tighter text-white">
-              {cmsData.flashSale.heading}
+      {/* Simple Banner - Replaced Flash Sale */}
+      <section className="bg-white py-10 border-t border-b border-black/5">
+        <div className="max-w-7xl mx-auto px-4 md:px-12 text-center">
+            <h2 className="text-xl md:text-2xl font-black uppercase tracking-tighter text-black">
+              Discover Our Newest Minimalist Collection
             </h2>
-            <p className="text-white/50 text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium max-w-sm">
-              {cmsData.flashSale.subheading}
-            </p>
-          </div>
-          
-          {/* Timer Section */}
-          <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10">
-            {/* Discount Badge */}
-            <div className="bg-white text-black px-6 py-4 rounded-full font-black uppercase tracking-widest text-[10px] text-center whitespace-pre-line leading-none">
-              {cmsData.flashSale.discountText.replace(' ', '\n')}
-            </div>
-            
-            {/* Countdown */}
-            <div className="flex items-center gap-4 md:gap-8">
-              {[
-                { val: timeLeft.days, label: 'Days' },
-                { val: timeLeft.hours, label: 'Hours' },
-                { val: timeLeft.minutes, label: 'Minutes' },
-                { val: timeLeft.seconds, label: 'Seconds' }
-              ].map(item => (
-                <div key={item.label} className="flex flex-col items-center min-w-[3rem]">
-                  <span className="text-2xl md:text-3xl font-black tabular-nums">{item.val.toString().padStart(2, '0')}</span>
-                  <span className="text-[7px] uppercase tracking-[0.2em] text-white/40 font-bold mt-1">{item.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
@@ -252,10 +222,11 @@ export function Home() {
              >
                <img 
                  src={cat.image} 
-                 alt={cat.name}
-                 className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-all duration-[1.5s] ease-out opacity-20 group-hover:opacity-100 grayscale group-hover:grayscale-0"
+                 alt={cat.title}
+                 className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-all duration-[1.5s] ease-out"
                />
-      <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-between">
+               <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors" />
+               <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-between">
                   <div className="flex justify-between items-start">
                     <span className="text-[11px] font-mono text-black/30">0{i+1}</span>
                     <span className="text-[10px] uppercase tracking-widest font-bold text-black/20 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">{cat.countText}</span>
@@ -518,7 +489,7 @@ export function Home() {
 
           <div className="md:w-1/2">
              <div className="relative h-full min-h-[600px] overflow-hidden rounded-2xl group">
-               <img src={cmsData.blogPosts[2]?.image || cmsData.blogPosts[0].image} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-[2s]" alt="Featured blog" />
+               <img src={cmsData.blogSection.featuredImage} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-[2s]" alt="Featured blog" />
                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
                <div className="absolute top-6 left-6 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-[9px] uppercase tracking-widest font-bold text-white">Hot news</div>
                <div className="absolute bottom-12 left-12 right-12 text-white space-y-6">

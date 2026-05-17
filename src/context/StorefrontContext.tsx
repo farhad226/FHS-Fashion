@@ -64,6 +64,7 @@ export interface CMSData {
   blogSection: {
     heading: string;
     subheading: string;
+    featuredImage: string;
   };
   blogPosts: Array<{
     id: string;
@@ -142,7 +143,8 @@ const defaultCMSData: CMSData = {
   ],
   blogSection: {
     heading: "Writing source for\nmen's fashion\ninsights",
-    subheading: "Explore trends, tips, and more. Elevate your style journey with our insightful men's fashion blog."
+    subheading: "Explore trends, tips, and more. Elevate your style journey with our insightful men's fashion blog.",
+    featuredImage: "https://images.unsplash.com/photo-1505022610485-0249ba5b3675?auto=format&fit=crop&q=80&w=1000"
   },
   blogPosts: [
     { id: '1', date: 'Sep 28, 2023', author: 'Robert Fox', title: 'Stay updated on latest styles', description: 'Be part of the style conversation our fashion news that brings flair to your fingertips.', image: 'https://images.unsplash.com/photo-1479064566235-aa6a42b5a30e?auto=format&fit=crop&q=80&w=600' },
