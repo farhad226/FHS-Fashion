@@ -31,45 +31,8 @@ export function Home() {
     return () => clearInterval(timer);
   }, []);
 
-  const testimonials = [
-    {
-      quote: "The attention to material detail is unparalleled. Every piece feels like a lifelong investment rather than a seasonal trend.",
-      author: "Frank Klin",
-      role: "Architect",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200",
-      rating: 5,
-      social: "instagram",
-      id: "01"
-    },
-    {
-      quote: "Minimalism redefined. The structural integrity of the Japanese heavy cotton is exactly what I've been searching for years.",
-      author: "Linda Anand",
-      role: "Designer",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200",
-      rating: 5,
-      social: "facebook",
-      id: "02"
-    },
-    {
-      quote: "Luxury is often loud, but FHS Fashion understands the power of silence. The silhouettes speak for themselves.",
-      author: "David Gueta",
-      role: "Artist",
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200",
-      rating: 4,
-      social: "twitter",
-      id: "03"
-    },
-    {
-      quote: "Their commitment to archival quality is evident in every stitch. A true pioneer in modern minimalist luxury.",
-      author: "Sarah J. Stone",
-      role: "Creative",
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200",
-      rating: 5,
-      social: "instagram",
-      id: "04"
-    }
-  ];
-   
+  const testimonials = cmsData.testimonials;
+    
    const heroY = useTransform(scrollYProgress, [0, 1], [0, 400]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
 
@@ -85,13 +48,7 @@ export function Home() {
     showToast(`${product.name} added to your bag`);
   };
 
-  const categories = [
-    { name: 'Shirts', image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&q=80&w=800', path: '/category/shirts', count: '12 Pieces' },
-    { name: 'Outerwear', image: 'https://images.unsplash.com/photo-1544022613-e87f17a7845f?auto=format&fit=crop&q=80&w=800', path: '/category/outerwear', count: '08 Pieces' },
-    { name: 'Trousers', image: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&q=80&w=800', path: '/category/pants', count: '15 Pieces' },
-    { name: 'Footwear', image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=800', path: '/category/shoes', count: '06 Pieces' },
-  ];
-
+  // Featured items logic
   const featured = [
     { id: 1, name: 'Premium Oxford Shirt', price: '$89.00', image: 'https://images.unsplash.com/photo-1598033129183-c4f50c717658?auto=format&fit=crop&q=80&w=800', tag: 'New Season', category: 'Shirt' },
     { id: 2, name: 'Heavyweight Cotton Tee', price: '$45.00', image: 'https://images.unsplash.com/photo-1562157873-818bc0726f68?auto=format&fit=crop&q=80&w=800', tag: 'Essentials', category: 'Shirt' },
@@ -155,26 +112,40 @@ export function Home() {
       </section>
 
       {/* Flash Sale Bar */}
-      <section className="bg-[#1A1A1A] text-white py-12 border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-[15px] md:px-12 flex flex-col md:flex-row items-center justify-between gap-10">
-          <div className="space-y-2">
-            <h2 className="text-2xl font-black uppercase tracking-tight">{cmsData.flashSale.heading}</h2>
-            <p className="text-white/40 text-xs uppercase tracking-widest font-medium whitespace-pre-line">{cmsData.flashSale.subheading}</p>
+      <section className="bg-[#111] text-white py-12 border-t border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 md:px-12 flex flex-col lg:flex-row items-center justify-between gap-8">
+          
+          {/* Text Section */}
+          <div className="text-center lg:text-left space-y-2">
+            <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tighter text-white">
+              {cmsData.flashSale.heading}
+            </h2>
+            <p className="text-white/50 text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium max-w-sm">
+              {cmsData.flashSale.subheading}
+            </p>
           </div>
           
-          <div className="flex items-center space-x-8">
-            <div className="bg-white text-black px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest">{cmsData.flashSale.discountText}</div>
-            {[
-              { val: timeLeft.days, label: 'Days' },
-              { val: timeLeft.hours, label: 'Hours' },
-              { val: timeLeft.minutes, label: 'Minutes' },
-              { val: timeLeft.seconds, label: 'Seconds' }
-            ].map(item => (
-              <div key={item.label} className="flex flex-col items-center">
-                <span className="text-4xl font-black mb-1 tabular-nums">{item.val.toString().padStart(2, '0')}</span>
-                <span className="text-[8px] uppercase tracking-[0.3em] font-bold text-white/30">{item.label}</span>
-              </div>
-            ))}
+          {/* Timer Section */}
+          <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10">
+            {/* Discount Badge */}
+            <div className="bg-white text-black px-6 py-4 rounded-full font-black uppercase tracking-widest text-[10px] text-center whitespace-pre-line leading-none">
+              {cmsData.flashSale.discountText.replace(' ', '\n')}
+            </div>
+            
+            {/* Countdown */}
+            <div className="flex items-center gap-4 md:gap-8">
+              {[
+                { val: timeLeft.days, label: 'Days' },
+                { val: timeLeft.hours, label: 'Hours' },
+                { val: timeLeft.minutes, label: 'Minutes' },
+                { val: timeLeft.seconds, label: 'Seconds' }
+              ].map(item => (
+                <div key={item.label} className="flex flex-col items-center min-w-[3rem]">
+                  <span className="text-2xl md:text-3xl font-black tabular-nums">{item.val.toString().padStart(2, '0')}</span>
+                  <span className="text-[7px] uppercase tracking-[0.2em] text-white/40 font-bold mt-1">{item.label}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -184,8 +155,8 @@ export function Home() {
         <div className="max-w-7xl mx-auto px-[15px] md:px-12 mb-12">
           <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-8">
             <div className="space-y-4">
-              <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-black/30">Trending Now</span>
-              <h2 className="text-2xl md:text-5xl font-black uppercase tracking-tighter">Trendy styles, incredible savings</h2>
+              <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-black/30">{cmsData.trending.sectionName}</span>
+              <h2 className="text-2xl md:text-5xl font-black uppercase tracking-tighter">{cmsData.trending.heading}</h2>
             </div>
             <div className="flex items-center space-x-4">
               <button 
@@ -260,8 +231,8 @@ export function Home() {
             ))}
           </div>
           <div className="flex justify-center mt-8">
-            <Link to="/shop" className="bg-[#1A1A1A] text-white px-10 py-3.5 rounded-sm text-[10px] font-bold uppercase tracking-widest hover:bg-black transition-all">
-              View more
+            <Link to={cmsData.trending.buttonUrl} className="bg-[#1A1A1A] text-white px-10 py-3.5 rounded-sm text-[10px] font-bold uppercase tracking-widest hover:bg-black transition-all">
+              {cmsData.trending.buttonText}
             </Link>
           </div>
         </div>
@@ -270,9 +241,9 @@ export function Home() {
 
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[2px] bg-black/5 border-y border-black/5">
-           {categories.map((cat, i) => (
+           {cmsData.homeCategories.map((cat, i) => (
              <motion.div 
-               key={cat.name}
+               key={cat.id}
                initial={{ opacity: 0 }}
                whileInView={{ opacity: 1 }}
                viewport={{ once: true }}
@@ -287,13 +258,13 @@ export function Home() {
       <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-between">
                   <div className="flex justify-between items-start">
                     <span className="text-[11px] font-mono text-black/30">0{i+1}</span>
-                    <span className="text-[10px] uppercase tracking-widest font-bold text-black/20 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">{cat.count}</span>
+                    <span className="text-[10px] uppercase tracking-widest font-bold text-black/20 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">{cat.countText}</span>
                   </div>
                   <div>
-                    <h3 className="text-2xl md:text-3xl font-bold uppercase tracking-tighter mb-4 md:mb-6 translate-y-0 md:translate-y-4 group-hover:translate-y-0 transition-transform duration-500">{cat.name}</h3>
+                    <h3 className="text-2xl md:text-3xl font-bold uppercase tracking-tighter mb-4 md:mb-6 translate-y-0 md:translate-y-4 group-hover:translate-y-0 transition-transform duration-500">{cat.title}</h3>
                     <div className="h-[1px] w-full md:w-0 bg-black group-hover:w-full transition-all duration-700 mb-6 md:mb-8" />
                     <Link 
-                      to={cat.path} 
+                      to={cat.url} 
                       className="inline-flex items-center space-x-3 text-[10px] uppercase tracking-[0.3em] font-bold opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-0 md:translate-y-4 group-hover:translate-y-0"
                     >
                       <span>Explore</span>
@@ -308,25 +279,25 @@ export function Home() {
 
       {/* Newsletter / News CTA */}
       <section className="relative h-[600px] flex items-center overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&q=80&w=2000" className="absolute inset-0 w-full h-full object-cover" alt="Newsletter background" />
+        <img src={cmsData.newsletter.bgImage} className="absolute inset-0 w-full h-full object-cover" alt="Newsletter background" />
         <div className="absolute inset-0 bg-black/40" />
         <div className="relative z-10 max-w-7xl mx-auto px-[15px] md:px-12 w-full grid grid-cols-1 md:grid-cols-3 gap-12 text-white">
           <div className="space-y-4">
-            <span className="text-[9px] uppercase tracking-widest font-bold text-white/60">NEW ARRIVAL</span>
-            <h3 className="text-2xl font-black uppercase tracking-tight">Fresh finds</h3>
-            <p className="text-sm text-white/50">Explore new trends, elevate your wardrobe with our exceptional arrivals.</p>
+            <span className="text-[9px] uppercase tracking-widest font-bold text-white/60">{cmsData.newsletter.block1Title}</span>
+            <h3 className="text-2xl font-black uppercase tracking-tight">{cmsData.newsletter.block1Heading}</h3>
+            <p className="text-sm text-white/50">{cmsData.newsletter.block1Text}</p>
             <Link to="/shop" className="inline-block text-[10px] font-bold uppercase tracking-widest border-b border-white pb-1">Shop now</Link>
           </div>
           <div className="space-y-4">
-            <span className="text-[9px] uppercase tracking-widest font-bold text-white/60">LATEST TRENDING</span>
-            <h3 className="text-2xl font-black uppercase tracking-tight">Hot fashion picks</h3>
-            <p className="text-sm text-white/50">Explore the latest trends with our captivating trending fashion collection.</p>
+            <span className="text-[9px] uppercase tracking-widest font-bold text-white/60">{cmsData.newsletter.block2Title}</span>
+            <h3 className="text-2xl font-black uppercase tracking-tight">{cmsData.newsletter.block2Heading}</h3>
+            <p className="text-sm text-white/50">{cmsData.newsletter.block2Text}</p>
             <Link to="/shop" className="inline-block text-[10px] font-bold uppercase tracking-widest border-b border-white pb-1">Shop all trending</Link>
           </div>
           <div className="space-y-4">
-            <span className="text-[9px] uppercase tracking-widest font-bold text-white/60">FASHION NEWS</span>
-            <h3 className="text-2xl font-black uppercase tracking-tight">Worker trends</h3>
-            <p className="text-sm text-white/50">Discover sophisticated trends defining modern corporate attire for the contemporary gentleman.</p>
+            <span className="text-[9px] uppercase tracking-widest font-bold text-white/60">{cmsData.newsletter.block3Title}</span>
+            <h3 className="text-2xl font-black uppercase tracking-tight">{cmsData.newsletter.block3Heading}</h3>
+            <p className="text-sm text-white/50">{cmsData.newsletter.block3Text}</p>
             <Link to="/blog" className="inline-block text-[10px] font-bold uppercase tracking-widest border-b border-white pb-1">Read news</Link>
           </div>
         </div>
@@ -352,8 +323,8 @@ export function Home() {
       {/* Featured Pieces Part 2 (Grid with filter feel) */}
       <section className="py-12 md:py-24 bg-[#F8F9FA]">
         <div className="max-w-7xl mx-auto px-[15px] md:px-12 text-center mb-10 md:mb-16">
-          <span className="text-[10px] uppercase tracking-[0.5em] font-bold text-black/30 mb-4 block">PRODUCT</span>
-          <h2 className="text-2xl md:text-6xl font-black uppercase tracking-tighter">Your fashion, our product</h2>
+          <span className="text-[10px] uppercase tracking-[0.5em] font-bold text-black/30 mb-4 block">{cmsData.featuredProducts.sectionName}</span>
+          <h2 className="text-2xl md:text-6xl font-black uppercase tracking-tighter">{cmsData.featuredProducts.heading}</h2>
           
           <div className="flex justify-center flex-wrap gap-8 mt-12 mb-20 text-[10px] font-bold uppercase tracking-widest">
             {['Jacket', 'Shirt', 'Suit', 'Pants', 'Shoes', 'Wallet', 'Bag', 'Belt', 'Hat', 'Glasses', 'Tie'].map(cat => (
@@ -429,8 +400,8 @@ export function Home() {
         </div>
         
         <div className="flex justify-center mt-20">
-          <Link to="/shop" className="bg-[#1A1A1A] text-white px-12 py-4 rounded-sm text-[10px] font-black uppercase tracking-widest hover:bg-black transition-all">
-            More collection
+          <Link to={cmsData.featuredProducts.buttonUrl} className="bg-[#1A1A1A] text-white px-12 py-4 rounded-sm text-[10px] font-black uppercase tracking-widest hover:bg-black transition-all">
+            {cmsData.featuredProducts.buttonText}
           </Link>
         </div>
       </section>
@@ -440,8 +411,8 @@ export function Home() {
         <div className="max-w-7xl mx-auto px-[15px] md:px-12 flex flex-col md:flex-row items-center gap-12 md:gap-24">
           <div className="md:w-1/2 relative space-y-10">
              <div className="space-y-4">
-               <span className="text-[10px] uppercase tracking-[0.5em] font-bold text-white/30">TESTIMONIAL</span>
-               <h2 className="text-3xl md:text-7xl font-black text-white uppercase tracking-tighter leading-[0.9]">Real fashion <br /> experiences, <br /> <span className="text-white/20 italic">Real men</span></h2>
+               <span className="text-[10px] uppercase tracking-[0.5em] font-bold text-white/30">{cmsData.testimonialsSection.sectionName}</span>
+               <h2 className="text-3xl md:text-7xl font-black text-white uppercase tracking-tighter leading-[0.9] whitespace-pre-line">{cmsData.testimonialsSection.heading}</h2>
                <div className="flex space-x-4 pt-4">
                   <button 
                     onClick={() => setCurrentSlide(prev => (prev === 0 ? testimonials.length - 1 : prev - 1))}
@@ -482,7 +453,7 @@ export function Home() {
 
           <div className="md:w-1/2 space-y-16">
             <div className="flex flex-col space-y-6">
-              <p className="text-white/50 text-sm leading-relaxed max-w-md italic">Read authentic stories from men who have experienced our fashion, embodying style, quality, and confidence.</p>
+              <p className="text-white/50 text-sm leading-relaxed max-w-md italic whitespace-pre-line">{cmsData.testimonialsSection.subheading}</p>
               <button className="self-start text-[10px] font-bold uppercase tracking-widest text-white border border-white/10 px-8 py-3 rounded-full hover:bg-white hover:text-black transition-all">More stories</button>
             </div>
 
@@ -524,44 +495,36 @@ export function Home() {
         <div className="max-w-7xl mx-auto px-[15px] md:px-12 flex flex-col md:flex-row gap-12 md:gap-20">
           <div className="md:w-1/2 space-y-10">
             <div className="space-y-4">
-              <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-[0.9]">Writing source for <br /> men's fashion <br /> <span className="flex items-center gap-4">insights <Plus className="w-10 h-10 text-white fill-black" rotate={45} /></span></h2>
-              <p className="text-black/40 text-sm max-w-sm italic">Explore trends, tips, and more. Elevate your style journey with our insightful men's fashion blog.</p>
+              <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-[0.9] whitespace-pre-line">{cmsData.blogSection.heading} <Plus className="inline-block w-10 h-10 text-white fill-black" rotate={45} /></h2>
+              <p className="text-black/40 text-sm max-w-sm italic whitespace-pre-line">{cmsData.blogSection.subheading}</p>
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
-               <div className="space-y-4 group">
+               {cmsData.blogPosts.slice(0, 2).map((post, index) => (
+               <div key={post.id} className="space-y-4 group">
                  <div className="aspect-[4/3] overflow-hidden rounded-lg">
-                   <img src="https://images.unsplash.com/photo-1479064566235-aa6a42b5a30e?auto=format&fit=crop&q=80&w=600" className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700" alt="Blog 1" />
+                   <img src={post.image} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700" alt={post.title} />
                  </div>
                  <div className="space-y-2">
-                   <p className="text-[9px] uppercase tracking-widest font-bold text-black/30">Sep 28, 2023 • By Robert Fox</p>
-                   <h3 className="text-lg font-black uppercase tracking-tight group-hover:underline">Stay updated on latest styles</h3>
-                   <p className="text-[11px] text-black/50 leading-relaxed">Be part of the style conversation our fashion news that brings flair to your fingertips.</p>
+                   <p className="text-[9px] uppercase tracking-widest font-bold text-black/30">{post.date} • By {post.author}</p>
+                   <h3 className="text-lg font-black uppercase tracking-tight group-hover:underline">{post.title}</h3>
+                   <p className="text-[11px] text-black/50 leading-relaxed">{post.description}</p>
                  </div>
                </div>
-               <div className="space-y-4 group">
-                 <div className="aspect-[4/3] overflow-hidden rounded-lg">
-                   <img src="https://images.unsplash.com/photo-1543132220-4bf3de6e10ae?auto=format&fit=crop&q=80&w=600" className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700" alt="Blog 2" />
-                 </div>
-                 <div className="space-y-2">
-                   <p className="text-[9px] uppercase tracking-widest font-bold text-black/30">August 20, 2023 • By Jacob Jonas</p>
-                   <h3 className="text-lg font-black uppercase tracking-tight group-hover:underline">2023 Men's Fashion Trends</h3>
-                   <p className="text-[11px] text-black/50 leading-relaxed">Step into the world of men's beauty with our news, revealing the latest trends and stories.</p>
-                 </div>
-               </div>
+               ))}
             </div>
             <button className="text-[10px] font-bold uppercase tracking-widest border border-black/10 px-10 py-3.5 rounded-full hover:bg-black hover:text-white transition-all">More articles</button>
           </div>
 
           <div className="md:w-1/2">
              <div className="relative h-full min-h-[600px] overflow-hidden rounded-2xl group">
-               <img src="https://images.unsplash.com/photo-1505022610485-0249ba5b3675?auto=format&fit=crop&q=80&w=1000" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-[2s]" alt="Featured blog" />
+               <img src={cmsData.blogPosts[2]?.image || cmsData.blogPosts[0].image} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-[2s]" alt="Featured blog" />
                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
                <div className="absolute top-6 left-6 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-[9px] uppercase tracking-widest font-bold text-white">Hot news</div>
                <div className="absolute bottom-12 left-12 right-12 text-white space-y-6">
                  <div>
-                   <p className="text-[10px] uppercase tracking-widest font-bold text-white/60 mb-2">August 23, 2023 • By Cody Fisher</p>
-                   <h3 className="text-2xl md:text-4xl font-black uppercase tracking-tighter leading-[0.9]">Finding the perfect fit for suits and shirts</h3>
+                   <p className="text-[10px] uppercase tracking-widest font-bold text-white/60 mb-2">{cmsData.blogPosts[2]?.date || cmsData.blogPosts[0].date} • By {cmsData.blogPosts[2]?.author || cmsData.blogPosts[0].author}</p>
+                   <h3 className="text-2xl md:text-4xl font-black uppercase tracking-tighter leading-[0.9]">{cmsData.blogPosts[2]?.title || cmsData.blogPosts[0].title}</h3>
                  </div>
                  <div className="w-16 h-16 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-all cursor-pointer">
                     <ArrowUpRight className="w-8 h-8" />

@@ -7,7 +7,10 @@ import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useAuth } from '../../context/AuthContext';
 
+import { useStorefront } from '../../context/StorefrontContext';
+
 export function Navbar() {
+  const { cmsData } = useStorefront();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -133,9 +136,13 @@ export function Navbar() {
             {/* Logo - Left */}
             <Link 
               to="/" 
-              className="text-3xl font-black tracking-[-0.05em] hover:opacity-70 transition-opacity shrink-0"
+              className="text-3xl font-black tracking-[-0.05em] hover:opacity-70 transition-opacity shrink-0 flex items-center"
             >
-              MENNY
+              {cmsData.global?.logoImage ? (
+                <img src={cmsData.global.logoImage} alt="Brand Logo" className="h-8 object-contain" />
+              ) : (
+                cmsData.global?.logoText || 'MENNY'
+              )}
             </Link>
 
             {/* Desktop Navigation - Leftish */}

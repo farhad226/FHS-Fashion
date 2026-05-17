@@ -13,7 +13,13 @@ export function Footer() {
           {/* Left Section */}
           <div className="lg:col-span-7 lg:pr-20 space-y-16">
             <div className="space-y-6">
-              <h2 className="text-4xl font-bold tracking-tight">MENNY</h2>
+              <h2 className="text-4xl font-bold tracking-tight">
+                {cmsData.global?.logoImage ? (
+                  <img src={cmsData.global.logoImage} alt="Brand Logo" className="h-8 object-contain" />
+                ) : (
+                  cmsData.global?.logoText || 'MENNY'
+                )}
+              </h2>
               <p className="text-white/50 text-sm leading-relaxed max-w-md whitespace-pre-line">
                 {cmsData.footer.description}
               </p>
