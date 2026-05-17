@@ -26,6 +26,19 @@ export function StorefrontCMS() {
     setFormData(prev => ({ ...prev, hero: { ...prev.hero, [field]: value } }));
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          updateHero('bgImage', reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const updateFlashSale = (field: keyof CMSData['flashSale'], value: string) => {
     setFormData(prev => ({ ...prev, flashSale: { ...prev.flashSale, [field]: value } }));
   };
@@ -127,14 +140,27 @@ export function StorefrontCMS() {
                     <label className="text-[10px] uppercase font-bold tracking-widest mb-2 flex items-center space-x-2">
                       <ImageIcon className="w-4 h-4" /> <span>Background Image URL</span>
                     </label>
-                    <input 
-                      type="text" 
-                      className="w-full bg-[#F9F9F9] border border-black/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors" 
-                      value={formData.hero.bgImage}
-                      onChange={(e) => updateHero('bgImage', e.target.value)}
-                    />
+                    <div className="flex gap-4 items-center mb-4">
+                      <input 
+                        type="text" 
+                        className="flex-1 bg-[#F9F9F9] border border-black/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors" 
+                        value={formData.hero.bgImage}
+                        onChange={(e) => updateHero('bgImage', e.target.value)}
+                        placeholder="Paste image URL..."
+                      />
+                      <span className="text-xs uppercase font-bold text-black/50">OR</span>
+                      <label className="cursor-pointer bg-black text-white px-6 py-3 rounded-xl text-[10px] uppercase font-bold tracking-widest hover:bg-black/80 transition-colors whitespace-nowrap">
+                        Upload Image
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleImageUpload}
+                        />
+                      </label>
+                    </div>
                     {formData.hero.bgImage && (
-                      <div className="mt-4 rounded-xl overflow-hidden h-32 border border-black/10">
+                      <div className="mt-4 rounded-xl overflow-hidden h-48 border border-black/10 shadow-sm">
                         <img src={formData.hero.bgImage} alt="Hero Preview" className="w-full h-full object-cover" />
                       </div>
                     )}
