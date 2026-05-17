@@ -1,0 +1,108 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Customer or Admin user profile",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string" },
+        "fullName": { "type": "string" },
+        "phone": { "type": "string" },
+        "role": { "type": "string", "enum": ["customer", "admin"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "email", "fullName", "role"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Fashion item for sale",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "slug": { "type": "string" },
+        "description": { "type": "string" },
+        "categoryId": { "type": "string" },
+        "regularPrice": { "type": "number" },
+        "salePrice": { "type": "number" },
+        "sku": { "type": "string" },
+        "stockQuantity": { "type": "integer" },
+        "lowStockThreshold": { "type": "integer" },
+        "images": { "type": "array", "items": { "type": "string" } },
+        "isActive": { "type": "boolean" },
+        "variants": { "type": "array", "items": { "$ref": "ProductVariant" } },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "slug", "regularPrice", "categoryId"]
+    },
+    "ProductVariant": {
+      "title": "Product Variant",
+      "description": "Size/Color variant of a product",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "size": { "type": "string" },
+        "color": { "type": "string" },
+        "sku": { "type": "string" },
+        "stock": { "type": "integer" },
+        "priceAdjustment": { "type": "number" }
+      }
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Product category",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "slug": { "type": "string" },
+        "parentId": { "type": "string" },
+        "description": { "type": "string" },
+        "image": { "type": "string" }
+      },
+      "required": ["name", "slug"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer purchase order",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "orderNumber": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "processing", "shipped", "delivered", "cancelled"] },
+        "subtotal": { "type": "number" },
+        "tax": { "type": "number" },
+        "shippingCost": { "type": "number" },
+        "total": { "type": "number" },
+        "shippingAddress": { "type": "object" },
+        "billingAddress": { "type": "object" },
+        "paymentMethod": { "type": "string" },
+        "paymentStatus": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Users collection"
+    },
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Products collection"
+    },
+    "/categories/{categoryId}": {
+      "schema": "Category",
+      "description": "Categories collection"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Orders collection"
+    }
+  }
+}

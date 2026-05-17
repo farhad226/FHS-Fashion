@@ -1,0 +1,6 @@
+{
+  "name": "MENNY Fashion",
+  "description": "Premium men's fashion e-commerce inspired by modern editorial design.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
