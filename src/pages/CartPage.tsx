@@ -33,14 +33,14 @@ export function CartPage() {
   }
 
   return (
-    <div className="pt-32 md:pt-48 pb-20 px-6 md:px-12 max-w-7xl mx-auto">
+    <div className="pt-24 md:pt-48 pb-12 md:pb-20 px-[15px] md:px-12 max-w-7xl mx-auto">
       <div className="mb-12">
         <p className="text-[10px] uppercase tracking-[0.4em] font-black text-black/30 mb-2">Your Selection</p>
-        <h1 className="text-4xl md:text-5xl font-serif text-black mb-2">Shopping Bag</h1>
+        <h1 className="text-3xl md:text-5xl font-serif text-black mb-2">Shopping Bag</h1>
         <p className="text-sm text-black/40 font-light">{totalItems} {totalItems === 1 ? 'item' : 'items'}</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 pt-12 border-t border-black/5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 pt-8 md:pt-12 border-t border-black/5">
         {/* Cart Items */}
         <div className="lg:col-span-7 flex flex-col space-y-12">
           {cart.map((item, idx) => (
@@ -95,7 +95,7 @@ export function CartPage() {
 
         {/* Summary Card */}
         <div className="lg:col-span-5">
-          <div className="sticky top-40 border border-black/10 p-10 md:p-12 bg-white">
+          <div className="sticky top-40 border border-black/10 p-6 md:p-12 bg-white">
             <h2 className="text-2xl font-serif text-black mb-10">Order summary</h2>
             
             <div className="space-y-6 mb-10">

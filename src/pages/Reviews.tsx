@@ -41,9 +41,9 @@ export function Reviews() {
   };
 
   return (
-    <div className="bg-white pt-32 pb-24">
+    <div className="bg-white pt-24 md:pt-32 pb-12 md:pb-24">
       {/* Header Section */}
-      <section className="max-w-7xl mx-auto px-6 md:px-12 mb-24">
+      <section className="max-w-7xl mx-auto px-[15px] md:px-12 mb-12 md:mb-24">
         <div className="flex flex-col md:flex-row items-baseline justify-between gap-8 mb-12">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -61,7 +61,7 @@ export function Reviews() {
         <motion.h1 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter mb-8 md:mb-10 uppercase leading-none"
+          className="text-3xl md:text-6xl lg:text-7xl font-black tracking-tighter mb-6 md:mb-10 uppercase leading-none"
         >
           Community <span className="text-[#BFA48F]">Perspectives</span>
         </motion.h1>
@@ -84,7 +84,7 @@ export function Reviews() {
 
           <div className="lg:col-span-2 bg-black text-white p-12 rounded-3xl relative overflow-hidden flex flex-col justify-center">
             <Quote className="absolute top-10 right-10 w-24 h-24 text-white/5" />
-            <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-tight relative z-10">
+            <h2 className="text-2xl md:text-5xl font-black uppercase tracking-tighter leading-tight relative z-10">
               "MENNY IS NOT JUST CLOTHING; IT IS A RE-THINKING OF THE MODERN WARDROBE."
             </h2>
             <div className="mt-12 flex items-center space-x-4 relative z-10">
@@ -101,7 +101,7 @@ export function Reviews() {
       </section>
 
       {/* Reviews Grid */}
-      <section className="max-w-7xl mx-auto px-6 md:px-12">
+      <section className="max-w-7xl mx-auto px-[15px] md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <AnimatePresence mode="popLayout">
             {allReviews.slice(0, visibleCount).map((review, i) => (

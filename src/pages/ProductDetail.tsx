@@ -6,6 +6,7 @@ import { cn } from '../lib/utils';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
 import { useWishlist } from '../context/WishlistContext';
+import { trackEcommerceEvent } from '../lib/analytics';
 
 export function ProductDetail() {
   const { id } = useParams();
@@ -38,6 +39,10 @@ export function ProductDetail() {
     sizes: ['S', 'M', 'L', 'XL', 'XXL']
   };
 
+  useEffect(() => {
+    trackEcommerceEvent.viewItem(product);
+  }, [product.id]);
+
   const handleAddToBag = () => {
     if (!selectedSize) {
       setShowError(true);
@@ -53,6 +58,8 @@ export function ProductDetail() {
       size: selectedSize,
       quantity: 1
     });
+    
+    trackEcommerceEvent.addToCart({ ...product, price: parseFloat(product.price.replace('$', '')) }, 1);
 
     setIsAdded(true);
     showToast(`${product.name} added to your bag`);
@@ -95,7 +102,7 @@ export function ProductDetail() {
   }, [id]);
 
   return (
-    <div className="pt-24 md:pt-40 pb-20 px-6 md:px-12 max-w-7xl mx-auto">
+    <div className="pt-24 md:pt-40 pb-12 md:pb-20 px-[15px] md:px-12 max-w-7xl mx-auto">
       {/* Breadcrumbs */}
       <nav className="flex items-center space-x-2 text-[10px] uppercase tracking-[0.2em] text-black/40 mb-12">
         <Link to="/" className="hover:text-black transition-colors">Home</Link>
@@ -131,7 +138,7 @@ export function ProductDetail() {
             transition={{ delay: 0.2 }}
           >
             <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-black/30 mb-4">T-Shirts</p>
-            <h1 className="text-3xl md:text-3xl font-serif text-black mb-6 leading-tight">Core Black Tee</h1>
+            <h1 className="text-2xl md:text-3xl font-serif text-black mb-6 leading-tight">Core Black Tee</h1>
             <p className="text-2xl font-medium text-black mb-8">{product.price}</p>
             
             <p className="text-[13px] md:text-sm text-black/60 leading-relaxed font-light max-w-lg mb-10">
@@ -293,11 +300,11 @@ export function ProductDetail() {
       </div>
 
       {/* Complete the Look Section */}
-      <section className="mt-20 py-20 border-t border-black/5">
+      <section className="mt-12 md:mt-20 py-12 md:py-20 border-t border-black/5">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 space-y-6 md:space-y-0 text-center md:text-left">
           <div>
             <p className="text-[10px] uppercase tracking-[0.3em] text-black/30 mb-3">Curated Essentials</p>
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight uppercase">Complete the Look</h2>
+            <h2 className="text-2xl md:text-5xl font-bold tracking-tight uppercase">Complete the Look</h2>
           </div>
           <Link to="/shop" className="text-[10px] uppercase tracking-widest font-bold border-b border-black pb-1 hover:opacity-50 transition-opacity">
             Shop the full set

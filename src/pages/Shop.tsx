@@ -35,9 +35,9 @@ export function Shop() {
     : dummyProducts.filter(p => p.category === activeCategory);
 
   return (
-    <div className="pt-32 md:pt-48 pb-20 px-6 md:px-12 max-w-[1600px] mx-auto">
+    <div className="pt-24 md:pt-48 pb-12 md:pb-20 px-[15px] md:px-12 max-w-[1600px] mx-auto">
       {/* Header Section */}
-      <div className="mb-24">
+      <div className="mb-12 md:mb-24">
         <motion.div
            initial={{ opacity: 0, y: 30 }}
            animate={{ opacity: 1, y: 0 }}
@@ -48,7 +48,7 @@ export function Shop() {
             <span className="h-[1px] w-12 md:w-16 bg-black"></span>
             <span className="text-[9px] md:text-[11px] uppercase tracking-[0.4em] font-bold text-black/40">Established 2024</span>
           </div>
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter mb-8 md:mb-10 uppercase leading-none">
+          <h1 className="text-3xl md:text-6xl lg:text-7xl font-black tracking-tighter mb-6 md:mb-10 uppercase leading-none">
             Curated Collection
           </h1>
           <p className="text-sm md:text-lg text-black/60 font-light leading-relaxed max-w-2xl italic">
@@ -58,7 +58,7 @@ export function Shop() {
       </div>
 
       {/* Controls Bar */}
-      <div className="sticky top-[4rem] md:top-[4.5rem] z-40 bg-white/95 backdrop-blur-md border-y border-black/5 py-4 md:py-8 mb-10 md:20 px-2 flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-0">
+      <div className="sticky top-[4rem] md:top-[4.5rem] z-40 bg-white/95 backdrop-blur-md border-y border-black/5 py-4 md:py-8 mb-6 md:mb-20 px-2 flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-0">
         {/* Categories */}
         <div className="flex items-center space-x-6 md:space-x-10 overflow-x-auto no-scrollbar pb-1 md:pb-0">
           {categories.map((cat) => (
@@ -253,7 +253,7 @@ export function Shop() {
       </div>
 
       {/* Footer Nav */}
-      <div className="mt-48 pt-24 border-t border-black/10 flex flex-col items-center">
+      <div className="mt-24 md:mt-48 pt-12 md:pt-24 border-t border-black/10 flex flex-col items-center">
         <p className="text-[11px] uppercase tracking-[0.4em] font-bold text-black/30 mb-10">End of Collection</p>
         <button 
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}

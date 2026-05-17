@@ -128,7 +128,7 @@ export function Navbar() {
           ? "bg-white/95 backdrop-blur-md border-black/5 py-4" 
           : "bg-white border-transparent py-6"
       )}>
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <div className="max-w-7xl mx-auto px-[15px] md:px-12">
           <div className="flex items-center justify-between gap-10">
             {/* Logo - Left */}
             <Link 

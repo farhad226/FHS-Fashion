@@ -1,18 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
+import { useStorefront } from '../../context/StorefrontContext';
 
 export function Footer() {
+  const { cmsData } = useStorefront();
+
   return (
-    <footer className="bg-[#1C1C1C] text-white pt-24 pb-12 px-6 md:px-12 border-t border-white/5">
+    <footer className="bg-[#1C1C1C] text-white pt-12 md:pt-24 pb-12 px-[15px] md:px-12 border-t border-white/5">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-0 h-full">
           {/* Left Section */}
           <div className="lg:col-span-7 lg:pr-20 space-y-16">
             <div className="space-y-6">
               <h2 className="text-4xl font-bold tracking-tight">MENNY</h2>
-              <p className="text-white/50 text-sm leading-relaxed max-w-md">
-                From timeless classics to cutting-edge designs, we empower your fashion journey by offering a range that speaks sophistication.
+              <p className="text-white/50 text-sm leading-relaxed max-w-md whitespace-pre-line">
+                {cmsData.footer.description}
               </p>
             </div>
 

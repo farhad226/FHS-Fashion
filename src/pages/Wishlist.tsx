@@ -13,7 +13,7 @@ export function Wishlist() {
 
   if (wishlist.length === 0) {
     return (
-      <div className="pt-32 pb-20 px-6 text-center max-w-7xl mx-auto min-h-[70vh] flex flex-col justify-center items-center">
+      <div className="pt-24 pb-20 px-[15px] md:px-6 text-center max-w-7xl mx-auto min-h-[70vh] flex flex-col justify-center items-center">
         <motion.div
            initial={{ opacity: 0, scale: 0.9 }}
            animate={{ opacity: 1, scale: 1 }}
@@ -21,7 +21,7 @@ export function Wishlist() {
         >
           <Heart className="w-16 h-16 text-black/10" />
         </motion.div>
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-6 uppercase">Your wishlist is empty</h1>
+        <h1 className="text-3xl md:text-6xl font-bold tracking-tighter mb-6 uppercase">Your wishlist is empty</h1>
         <p className="text-xs md:text-sm text-black/40 tracking-[0.3em] uppercase mb-12 max-w-md leading-relaxed">
           Save items you love here to keep track of your favorite pieces.
         </p>
@@ -36,14 +36,14 @@ export function Wishlist() {
   }
 
   return (
-    <div className="pt-32 md:pt-48 pb-20 px-6 md:px-12 max-w-7xl mx-auto">
+    <div className="pt-24 md:pt-48 pb-12 md:pb-20 px-[15px] md:px-12 max-w-7xl mx-auto">
       <div className="mb-12">
         <p className="text-[10px] uppercase tracking-[0.4em] font-black text-black/30 mb-2">Saved Items</p>
-        <h1 className="text-4xl md:text-5xl font-serif text-black mb-2">Wishlist</h1>
+        <h1 className="text-3xl md:text-5xl font-serif text-black mb-2">Wishlist</h1>
         <p className="text-sm text-black/40 font-light">{wishlist.length} {wishlist.length === 1 ? 'item' : 'items'}</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-16 pt-12 border-t border-black/5">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 md:gap-x-8 gap-y-12 md:gap-y-16 pt-8 md:pt-12 border-t border-black/5">
         <AnimatePresence mode="popLayout">
           {wishlist.map((item) => (
             <motion.div

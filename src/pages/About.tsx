@@ -1,12 +1,15 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { ArrowUpRight, Globe, Award, ShieldCheck, Heart } from 'lucide-react';
+import { useStorefront } from '../context/StorefrontContext';
 
 export function About() {
+  const { cmsData } = useStorefront();
+
   return (
-    <div className="bg-white pt-32 pb-24">
+    <div className="bg-white pt-24 md:pt-32 pb-12 md:pb-24">
       {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-6 md:px-12 mb-24">
+      <section className="max-w-7xl mx-auto px-[15px] md:px-12 mb-12 md:mb-24">
         <div className="flex flex-col md:flex-row items-baseline justify-between gap-8 mb-12">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -23,9 +26,9 @@ export function About() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-[10px] md:text-[12px] uppercase tracking-[0.2em] font-medium text-black/60 max-w-xs text-right"
+            className="text-[10px] md:text-[12px] uppercase tracking-[0.2em] font-medium text-black/60 max-w-xs text-right whitespace-pre-line"
           >
-            Founded in 2024, MENNY is a testament to the modern man's pursuit of excellence and elegance.
+            {cmsData.about.description}
           </motion.p>
         </div>
 
@@ -34,9 +37,9 @@ export function About() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1 }}
-          className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter mb-8 md:mb-10 uppercase leading-none"
+          className="text-3xl md:text-6xl lg:text-7xl font-black tracking-tighter mb-8 md:mb-10 uppercase leading-none whitespace-pre-line"
         >
-          Redefining <span className="text-[#BFA48F]">Masculine</span> Elegance
+          {cmsData.about.heading}
         </motion.h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -78,15 +81,15 @@ export function About() {
       </section>
 
       {/* Philosophy Section */}
-      <section className="bg-black text-white py-32 overflow-hidden relative">
+      <section className="bg-black text-white py-12 md:py-32 overflow-hidden relative">
         <div className="absolute top-0 right-0 opacity-10 pointer-events-none">
           <h2 className="text-[20rem] font-black tracking-tighter uppercase leading-none select-none">MENNY</h2>
         </div>
         
-        <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-          <div className="mb-24">
+        <div className="max-w-7xl mx-auto px-[15px] md:px-12 relative z-10">
+          <div className="mb-12 md:mb-24">
             <span className="text-[10px] uppercase tracking-[0.5em] font-bold text-white/30 border-l border-white/20 pl-4">The Philosophy</span>
-            <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter mt-6">Built on Three <br /> Unwavering Pillars</h2>
+            <h2 className="text-3xl md:text-6xl font-black uppercase tracking-tighter mt-6">Built on Three <br /> Unwavering Pillars</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8">
@@ -115,8 +118,8 @@ export function About() {
       </section>
 
       {/* Designer Quote Section */}
-      <section className="py-32 bg-[#FBFBFB]">
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
+      <section className="py-12 md:py-32 bg-[#FBFBFB]">
+        <div className="max-w-7xl mx-auto px-[15px] md:px-12">
           <div className="flex flex-col lg:flex-row items-center gap-20">
              <div className="lg:w-1/2">
                 <div className="relative">
@@ -132,7 +135,7 @@ export function About() {
                 </div>
              </div>
              <div className="lg:w-1/2 space-y-8">
-               <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-tight">"MENNY is not just a brand; it is a movement towards intentional living."</h2>
+               <h2 className="text-2xl md:text-5xl font-black uppercase tracking-tighter leading-tight">"MENNY is not just a brand; it is a movement towards intentional living."</h2>
                <p className="text-black/60 leading-relaxed italic">
                  When I started this journey, my goal was simple: to create clothing that feels like armor—giving men the confidence to navigate the world with grace. We focus on the silhouette, the texture, and the emotion that a garment evokes.
                </p>
@@ -146,8 +149,8 @@ export function About() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 border-t border-black/5">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
+      <section className="py-12 md:py-32 border-t border-black/5">
+        <div className="max-w-7xl mx-auto px-[15px] md:px-12 text-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -155,7 +158,7 @@ export function About() {
             transition={{ duration: 0.8 }}
             className="space-y-10"
           >
-            <h2 className="text-5xl md:text-8xl font-black uppercase tracking-tighter">Join The <br /> Collective</h2>
+            <h2 className="text-4xl md:text-8xl font-black uppercase tracking-tighter">Join The <br /> Collective</h2>
             <p className="text-black/40 uppercase tracking-[0.3em] font-bold text-xs md:text-sm">Be the first to experience our new collection launches.</p>
             <div className="flex flex-col md:flex-row justify-center gap-6 pt-10">
               <button className="bg-black text-white px-12 py-5 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-black/90 transition-all flex items-center justify-center space-x-2 group">

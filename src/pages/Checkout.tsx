@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronRight, ShieldCheck, Truck, CreditCard, CheckCircle2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { cn } from '../lib/utils';
+import { trackEcommerceEvent } from '../lib/analytics';
 
 export function Checkout() {
   const { cart, totalPrice, clearCart } = useCart();
@@ -11,6 +12,13 @@ export function Checkout() {
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderComplete, setOrderComplete] = useState(false);
+
+  useEffect(() => {
+    // Only track begin_checkout if the cart isn't empty and we haven't completed the order
+    if (cart.length > 0 && !orderComplete) {
+      trackEcommerceEvent.beginCheckout(cart, totalPrice);
+    }
+  }, [cart, totalPrice, orderComplete, step]);
 
   const [formData, setFormData] = useState({
     email: '',
@@ -24,7 +32,7 @@ export function Checkout() {
 
   if (cart.length === 0 && !orderComplete) {
     return (
-      <div className="pt-32 pb-20 px-4 text-center max-w-7xl mx-auto flex flex-col items-center">
+      <div className="pt-24 md:pt-48 pb-12 md:pb-20 px-[15px] md:px-12 max-w-7xl mx-auto flex flex-col items-center">
         <h1 className="text-2xl font-bold tracking-tighter mb-4 uppercase">Your bag is empty</h1>
         <Link to="/shop" className="text-xs uppercase tracking-widest font-bold border-b border-black pb-1">Return to Shop</Link>
       </div>
@@ -40,6 +48,10 @@ export function Checkout() {
     setIsProcessing(true);
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    const transactionId = `FHS-${Math.floor(Math.random() * 100000)}`;
+    trackEcommerceEvent.purchase(transactionId, cart, totalPrice);
+    
     setIsProcessing(false);
     setOrderComplete(true);
     clearCart();
@@ -47,7 +59,7 @@ export function Checkout() {
 
   if (orderComplete) {
     return (
-      <div className="pt-32 pb-20 px-4 text-center max-w-7xl mx-auto min-h-[70vh] flex flex-col justify-center items-center">
+      <div className="pt-24 md:pt-48 pb-12 md:pb-20 px-[15px] md:px-12 max-w-7xl mx-auto min-h-[70vh] flex flex-col justify-center items-center text-center">
         <motion.div
            initial={{ scale: 0.8, opacity: 0 }}
            animate={{ scale: 1, opacity: 1 }}
@@ -68,8 +80,8 @@ export function Checkout() {
   }
 
   return (
-    <div className="pt-24 md:pt-40 pb-20 px-6 md:px-12 max-w-7xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+    <div className="pt-24 md:pt-40 pb-12 md:pb-20 px-[15px] md:px-12 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
       <div className="lg:col-span-12 mb-12">
         {/* Progress Bar */}
         <div className="flex items-center space-x-6 md:space-x-12 overflow-x-auto pb-4 no-scrollbar">
@@ -189,32 +201,63 @@ export function Checkout() {
                   <CreditCard className="w-4 h-4 mr-2" />
                   Payment Details
                 </h2>
-                <div className="p-8 border border-black/10 space-y-6">
-                   <div className="relative">
-                     <p className="text-[10px] uppercase tracking-widest text-black/40 mb-2">Card Number</p>
-                     <input placeholder="0000 0000 0000 0000" className="w-full border-b border-black/10 py-2 focus:outline-none focus:border-black transition-colors" />
-                   </div>
-                   <div className="grid grid-cols-2 gap-8">
-                     <div>
-                       <p className="text-[10px] uppercase tracking-widest text-black/40 mb-2">Expiry</p>
-                       <input placeholder="MM/YY" className="w-full border-b border-black/10 py-2 focus:outline-none focus:border-black transition-colors" />
+
+                <div className="space-y-4">
+                   {/* Credit Card */}
+                   <label className="block border border-black/10 focus-within:border-black transition-colors cursor-pointer bg-white">
+                     <div className="p-4 border-b border-black/5 flex items-center space-x-3">
+                       <input type="radio" name="payment" defaultChecked className="accent-black" />
+                       <span className="text-xs uppercase tracking-widest font-bold">Credit/Debit Card (Stripe)</span>
                      </div>
-                     <div>
-                       <p className="text-[10px] uppercase tracking-widest text-black/40 mb-2">CVC</p>
-                       <input placeholder="123" className="w-full border-b border-black/10 py-2 focus:outline-none focus:border-black transition-colors" />
+                     <div className="p-6 space-y-6">
+                       <div className="relative">
+                         <p className="text-[10px] uppercase tracking-widest text-black/40 mb-2">Card Number</p>
+                         <input placeholder="0000 0000 0000 0000" className="w-full border-b border-black/10 py-2 focus:outline-none focus:border-black transition-colors" />
+                       </div>
+                       <div className="grid grid-cols-2 gap-8">
+                         <div>
+                           <p className="text-[10px] uppercase tracking-widest text-black/40 mb-2">Expiry</p>
+                           <input placeholder="MM/YY" className="w-full border-b border-black/10 py-2 focus:outline-none focus:border-black transition-colors" />
+                         </div>
+                         <div>
+                           <p className="text-[10px] uppercase tracking-widest text-black/40 mb-2">CVC</p>
+                           <input placeholder="123" className="w-full border-b border-black/10 py-2 focus:outline-none focus:border-black transition-colors" />
+                         </div>
+                       </div>
                      </div>
-                   </div>
+                   </label>
+
+                   {/* Other Digital Wallets */}
+                   <label className="flex items-center space-x-3 p-4 border border-black/10 cursor-pointer hover:border-black transition-colors">
+                     <input type="radio" name="payment" className="accent-black" />
+                     <span className="text-xs uppercase tracking-widest font-bold flex-grow">PayPal</span>
+                   </label>
+                   
+                   <label className="flex items-center space-x-3 p-4 border border-black/10 cursor-pointer hover:border-black transition-colors">
+                     <input type="radio" name="payment" className="accent-black" />
+                     <span className="text-xs uppercase tracking-widest font-bold flex-grow text-[#E2136E]">bKash</span>
+                   </label>
+
+                   <label className="flex items-center space-x-3 p-4 border border-black/10 cursor-pointer hover:border-black transition-colors">
+                     <input type="radio" name="payment" className="accent-black" />
+                     <span className="text-xs uppercase tracking-widest font-bold flex-grow text-[#F7931E]">Nagad</span>
+                   </label>
+
+                   <label className="flex items-center space-x-3 p-4 border border-black/10 cursor-pointer hover:border-black transition-colors">
+                     <input type="radio" name="payment" className="accent-black" />
+                     <span className="text-xs uppercase tracking-widest font-bold flex-grow">Cash on Delivery (COD)</span>
+                   </label>
                 </div>
 
                 <button 
                   onClick={handlePlaceOrder}
                   disabled={isProcessing}
                   className={cn(
-                    "w-full py-5 text-xs uppercase tracking-widest font-bold transition-all flex items-center justify-center space-x-2",
+                    "w-full py-5 text-xs uppercase tracking-widest font-bold transition-all flex items-center justify-center space-x-2 mt-8",
                     isProcessing ? "bg-black/50 text-white cursor-wait" : "bg-black text-white hover:bg-black/90"
                   )}
                 >
-                  {isProcessing ? 'Processing Order...' : `Pay $${totalPrice.toFixed(2)}`}
+                  {isProcessing ? 'Processing Order...' : `Complete Order • $${totalPrice.toFixed(2)}`}
                 </button>
               </motion.div>
             )}

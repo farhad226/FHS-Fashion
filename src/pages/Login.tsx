@@ -22,13 +22,13 @@ export function Login() {
   }
 
   return (
-    <div className="pt-32 pb-20 px-4 md:px-8 max-w-lg mx-auto min-h-[70vh] flex flex-col justify-center">
+    <div className="pt-24 md:pt-32 pb-12 md:pb-20 px-[15px] md:px-8 max-w-lg mx-auto min-h-[70vh] flex flex-col justify-center">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="text-center"
       >
-        <h1 className="text-4xl font-bold tracking-tighter mb-4 uppercase">Join FHS</h1>
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tighter mb-4 uppercase">Join FHS</h1>
         <p className="text-sm text-black/50 tracking-widest uppercase mb-12">Experience premium fashion with personalized AI styling.</p>
         
         <div className="space-y-4">

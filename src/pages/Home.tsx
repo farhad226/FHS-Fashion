@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import { ArrowRight, ShoppingBag, Plus, ArrowUpRight, ChevronLeft, ChevronRight, Quote, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useStorefront } from '../context/StorefrontContext';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
 import { useWishlist } from '../context/WishlistContext';
 import { cn } from '../lib/utils';
-import heroImage from '../assets/images/hero_background_man_1779018045072.png';
 
 export function Home() {
+  const { cmsData } = useStorefront();
   const { addToCart } = useCart();
   const { showToast } = useToast();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
@@ -110,14 +111,14 @@ export function Home() {
       <section className="relative h-screen w-full overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
-            src={heroImage}
+            src={cmsData.hero.bgImage}
             alt="FHS Fashion"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/40" />
         </div>
 
-        <div className="relative z-10 w-full px-6 lg:px-[100px] h-full flex items-end pb-24">
+        <div className="relative z-10 w-full px-[15px] md:px-6 lg:px-[100px] h-full flex items-end pb-12 md:pb-24">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end w-full">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
@@ -125,9 +126,8 @@ export function Home() {
               transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
               className="lg:col-span-7"
             >
-              <h1 className="text-3xl md:text-5xl lg:text-[64px] font-sans font-black uppercase tracking-tighter leading-[1] text-white">
-                Unveiling apparel that <br />
-                dances to your beat
+              <h1 className="text-2xl md:text-5xl lg:text-[64px] font-sans font-black uppercase tracking-tighter leading-[1] text-white whitespace-pre-line">
+                {cmsData.hero.heading}
               </h1>
             </motion.div>
 
@@ -138,14 +138,14 @@ export function Home() {
               className="lg:col-span-5 flex flex-col items-start lg:items-end lg:text-left"
             >
               <div className="max-w-md lg:ml-auto">
-                <p className="text-base md:text-lg text-white/90 mb-10 leading-relaxed font-light">
-                  Explore our curated men's fashion, designed to resonate with your individuality and energy.
+                <p className="text-base md:text-lg text-white/90 mb-10 leading-relaxed font-light whitespace-pre-line">
+                  {cmsData.hero.subheading}
                 </p>
                 <Link 
-                  to="/shop" 
+                  to={cmsData.hero.buttonUrl} 
                   className="inline-flex items-center space-x-4 bg-white text-black px-10 py-5 rounded-full text-[12px] uppercase tracking-[0.2em] font-bold hover:bg-black hover:text-white transition-all group"
                 >
-                  <span>Shop all</span>
+                  <span>{cmsData.hero.buttonText}</span>
                   <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                 </Link>
               </div>
@@ -156,13 +156,14 @@ export function Home() {
 
       {/* Flash Sale Bar */}
       <section className="bg-[#1A1A1A] text-white py-12 border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-10">
+        <div className="max-w-7xl mx-auto px-[15px] md:px-12 flex flex-col md:flex-row items-center justify-between gap-10">
           <div className="space-y-2">
-            <h2 className="text-2xl font-black uppercase tracking-tight">Shop now, save more, enjoy life</h2>
-            <p className="text-white/40 text-xs uppercase tracking-widest font-medium">Act now! Shop and save big during our electrifying Flash Sale as time runs out.</p>
+            <h2 className="text-2xl font-black uppercase tracking-tight">{cmsData.flashSale.heading}</h2>
+            <p className="text-white/40 text-xs uppercase tracking-widest font-medium whitespace-pre-line">{cmsData.flashSale.subheading}</p>
           </div>
           
           <div className="flex items-center space-x-8">
+            <div className="bg-white text-black px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest">{cmsData.flashSale.discountText}</div>
             {[
               { val: timeLeft.days, label: 'Days' },
               { val: timeLeft.hours, label: 'Hours' },
@@ -179,12 +180,12 @@ export function Home() {
       </section>
 
       {/* Trending Now Slider Section */}
-      <section className="py-24 bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 mb-12">
+      <section className="py-12 md:py-24 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-[15px] md:px-12 mb-12">
           <div className="flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-8">
             <div className="space-y-4">
               <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-black/30">Trending Now</span>
-              <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter">Trendy styles, incredible savings</h2>
+              <h2 className="text-2xl md:text-5xl font-black uppercase tracking-tighter">Trendy styles, incredible savings</h2>
             </div>
             <div className="flex items-center space-x-4">
               <button 
@@ -209,7 +210,7 @@ export function Home() {
           </div>
         </div>
         
-        <div className="px-6 md:px-12">
+        <div className="px-[15px] md:px-12">
           <div 
             id="trending-scroll"
             className="flex space-x-6 overflow-x-auto no-scrollbar pb-12 snap-x snap-mandatory"
@@ -265,7 +266,7 @@ export function Home() {
           </div>
         </div>
       </section>
-      <section className="py-20 bg-[#FBFBFB]">
+      <section className="py-10 md:py-20 bg-[#FBFBFB]">
 
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[2px] bg-black/5 border-y border-black/5">
@@ -309,7 +310,7 @@ export function Home() {
       <section className="relative h-[600px] flex items-center overflow-hidden">
         <img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&q=80&w=2000" className="absolute inset-0 w-full h-full object-cover" alt="Newsletter background" />
         <div className="absolute inset-0 bg-black/40" />
-        <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full grid grid-cols-1 md:grid-cols-3 gap-12 text-white">
+        <div className="relative z-10 max-w-7xl mx-auto px-[15px] md:px-12 w-full grid grid-cols-1 md:grid-cols-3 gap-12 text-white">
           <div className="space-y-4">
             <span className="text-[9px] uppercase tracking-widest font-bold text-white/60">NEW ARRIVAL</span>
             <h3 className="text-2xl font-black uppercase tracking-tight">Fresh finds</h3>
@@ -349,10 +350,10 @@ export function Home() {
       </section>
 
       {/* Featured Pieces Part 2 (Grid with filter feel) */}
-      <section className="py-24 bg-[#F8F9FA]">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 text-center mb-16">
+      <section className="py-12 md:py-24 bg-[#F8F9FA]">
+        <div className="max-w-7xl mx-auto px-[15px] md:px-12 text-center mb-10 md:mb-16">
           <span className="text-[10px] uppercase tracking-[0.5em] font-bold text-black/30 mb-4 block">PRODUCT</span>
-          <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter">Your fashion, our product</h2>
+          <h2 className="text-2xl md:text-6xl font-black uppercase tracking-tighter">Your fashion, our product</h2>
           
           <div className="flex justify-center flex-wrap gap-8 mt-12 mb-20 text-[10px] font-bold uppercase tracking-widest">
             {['Jacket', 'Shirt', 'Suit', 'Pants', 'Shoes', 'Wallet', 'Bag', 'Belt', 'Hat', 'Glasses', 'Tie'].map(cat => (
@@ -370,7 +371,7 @@ export function Home() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-8 gap-y-12 md:gap-y-24 max-w-7xl mx-auto px-6 md:px-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-8 gap-y-12 md:gap-y-24 max-w-7xl mx-auto px-[15px] md:px-12">
           <AnimatePresence mode="popLayout">
             {filteredFeatured.length > 0 ? filteredFeatured.map((p, idx) => (
               <motion.div 
@@ -435,12 +436,12 @@ export function Home() {
       </section>
 
       {/* Testimonials - Large side portrait style */}
-      <section className="bg-[#1A1A1A] py-32 overflow-hidden border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center gap-24">
+      <section className="bg-[#1A1A1A] py-12 md:py-32 overflow-hidden border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-[15px] md:px-12 flex flex-col md:flex-row items-center gap-12 md:gap-24">
           <div className="md:w-1/2 relative space-y-10">
              <div className="space-y-4">
                <span className="text-[10px] uppercase tracking-[0.5em] font-bold text-white/30">TESTIMONIAL</span>
-               <h2 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter leading-[0.9]">Real fashion <br /> experiences, <br /> <span className="text-white/20 italic">Real men</span></h2>
+               <h2 className="text-3xl md:text-7xl font-black text-white uppercase tracking-tighter leading-[0.9]">Real fashion <br /> experiences, <br /> <span className="text-white/20 italic">Real men</span></h2>
                <div className="flex space-x-4 pt-4">
                   <button 
                     onClick={() => setCurrentSlide(prev => (prev === 0 ? testimonials.length - 1 : prev - 1))}
@@ -519,11 +520,11 @@ export function Home() {
       </section>
 
       {/* Blog & Insights Section */}
-      <section className="bg-white py-32">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row gap-20">
+      <section className="bg-white py-12 md:py-32">
+        <div className="max-w-7xl mx-auto px-[15px] md:px-12 flex flex-col md:flex-row gap-12 md:gap-20">
           <div className="md:w-1/2 space-y-10">
             <div className="space-y-4">
-              <h2 className="text-5xl font-black uppercase tracking-tighter leading-[0.9]">Writing source for <br /> men's fashion <br /> <span className="flex items-center gap-4">insights <Plus className="w-10 h-10 text-white fill-black" rotate={45} /></span></h2>
+              <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-[0.9]">Writing source for <br /> men's fashion <br /> <span className="flex items-center gap-4">insights <Plus className="w-10 h-10 text-white fill-black" rotate={45} /></span></h2>
               <p className="text-black/40 text-sm max-w-sm italic">Explore trends, tips, and more. Elevate your style journey with our insightful men's fashion blog.</p>
             </div>
             
@@ -560,7 +561,7 @@ export function Home() {
                <div className="absolute bottom-12 left-12 right-12 text-white space-y-6">
                  <div>
                    <p className="text-[10px] uppercase tracking-widest font-bold text-white/60 mb-2">August 23, 2023 • By Cody Fisher</p>
-                   <h3 className="text-4xl font-black uppercase tracking-tighter leading-[0.9]">Finding the perfect fit for suits and shirts</h3>
+                   <h3 className="text-2xl md:text-4xl font-black uppercase tracking-tighter leading-[0.9]">Finding the perfect fit for suits and shirts</h3>
                  </div>
                  <div className="w-16 h-16 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-all cursor-pointer">
                     <ArrowUpRight className="w-8 h-8" />

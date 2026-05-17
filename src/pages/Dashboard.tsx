@@ -34,7 +34,7 @@ export function Dashboard() {
   ];
 
   return (
-    <div className="pt-32 md:pt-48 pb-20 px-6 md:px-12 max-w-7xl mx-auto">
+    <div className="pt-24 md:pt-48 pb-12 md:pb-20 px-[15px] md:px-12 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-20 gap-8">
         <div>
           <div className="flex items-center space-x-4 mb-4">
