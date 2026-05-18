@@ -3,6 +3,8 @@ import path from "path";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
+import { Telegraf } from "telegraf";
+import Stripe from "stripe";
 
 dotenv.config();
 
@@ -22,6 +24,34 @@ async function startServer() {
   app.use(express.json());
 
   // API Routes
+  
+  // Telegram Bot
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  if (botToken) {
+    const bot = new Telegraf(botToken);
+    bot.start((ctx) => ctx.reply("Welcome to FHS Fashion!"));
+    bot.on("text", (ctx) => ctx.reply(`Echo: ${ctx.message.text}`));
+    bot.launch().catch((err: any) => console.error("Telegram bot error:", err));
+  }
+
+  
+  app.post("/api/payments/stripe/create-intent", async (req, res) => {
+    const key = process.env.STRIPE_SECRET_KEY;
+    if (!key) return res.status(500).json({ error: "Stripe not configured" });
+    const stripe = new Stripe(key);
+    try {
+      const { amount, currency } = req.body;
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(amount * 100), // convert to cents
+        currency: currency || 'usd',
+      });
+      res.json({ clientSecret: paymentIntent.client_secret });
+    } catch (error) {
+      console.error("Stripe Error:", error);
+      res.status(500).json({ error: "Failed to create payment intent" });
+    }
+  });
+
   app.post("/api/gemini/chat", async (req, res) => {
     try {
       const { message, history } = req.body;
