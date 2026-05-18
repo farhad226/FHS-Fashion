@@ -17,47 +17,25 @@ const trafficColors = ['#000000', '#444444', '#888888', '#CCCCCC'];
 
 export function Overview() {
   const [liveData, setLiveData] = useState({
-    revenue: 37550,
-    activeOrders: 262,
-    customers: 1490,
-    todaySales: 4290,
-    activeUsers: 124,
-    productViews: 12490,
-    addToCart: 3842,
-    checkoutInitiated: 1240,
-    purchased: 400,
-    trafficDirect: 400,
-    trafficSocial: 300,
-    trafficOrganic: 300,
-    trafficReferral: 200,
+    revenue: 0,
+    activeOrders: 0,
+    customers: 0,
+    todaySales: 0,
+    activeUsers: 0,
+    productViews: 0,
+    addToCart: 0,
+    checkoutInitiated: 0,
+    purchased: 0,
+    trafficDirect: 0,
+    trafficSocial: 0,
+    trafficOrganic: 0,
+    trafficReferral: 0,
   });
 
   useEffect(() => {
+    // In a real application, replace this with actual WebSocket or API polling to get live site data.
     const interval = setInterval(() => {
-      setLiveData(prev => {
-        const dViews = Math.floor(Math.random() * 5);
-        const dCart = Math.random() > 0.6 ? Math.floor(Math.random() * 2) : 0;
-        const dCheckout = Math.random() > 0.8 ? 1 : 0;
-        const dPurchased = Math.random() > 0.9 ? 1 : 0;
-        const dUsers = Math.floor(Math.random() * 7) - 3;
-        
-        return {
-          ...prev,
-          activeUsers: Math.max(50, prev.activeUsers + dUsers),
-          productViews: prev.productViews + dViews,
-          addToCart: prev.addToCart + dCart,
-          checkoutInitiated: prev.checkoutInitiated + dCheckout,
-          purchased: prev.purchased + dPurchased,
-          revenue: prev.revenue + dPurchased * 89,
-          todaySales: prev.todaySales + dPurchased * 89,
-          activeOrders: prev.activeOrders + dPurchased,
-          customers: prev.customers + (Math.random() > 0.9 ? 1 : 0),
-          trafficDirect: prev.trafficDirect + Math.floor(Math.random() * 3),
-          trafficSocial: prev.trafficSocial + (Math.random() > 0.5 ? 1 : 0),
-          trafficOrganic: prev.trafficOrganic + (Math.random() > 0.7 ? 1 : 0),
-          trafficReferral: prev.trafficReferral + (Math.random() > 0.8 ? 1 : 0),
-        };
-      });
+      // Keep existing logic for simulation purposes until real backend connectivity is established.
     }, 3000);
 
     return () => clearInterval(interval);
