@@ -39,12 +39,13 @@ export interface CMSData {
     }>;
   };
   paymentIntegrations: {
-    paypal: boolean;
-    stripe: boolean;
-    creditCard: boolean;
-    bkash: boolean;
-    nagad: boolean;
+    paypalEmail: string;
+    stripeApiKey: string;
+    creditCardInfo: string;
+    bkashNumber: string;
+    nagadNumber: string;
   };
+  telegramBotToken: string;
   newsletter: {
     bgImage: string;
     block1Title: string;
@@ -141,12 +142,13 @@ const defaultCMSData: CMSData = {
     ]
   },
   paymentIntegrations: {
-    paypal: false,
-    stripe: false,
-    creditCard: false,
-    bkash: false,
-    nagad: false,
+    paypalEmail: "",
+    stripeApiKey: "",
+    creditCardInfo: "",
+    bkashNumber: "",
+    nagadNumber: "",
   },
+  telegramBotToken: "",
   newsletter: {
     bgImage: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&q=80&w=2000",
     block1Title: "NEW ARRIVAL",
@@ -223,6 +225,8 @@ export function StorefrontProvider({ children }: { children: ReactNode }) {
             ...parsed.featuredProducts,
             products: parsed.featuredProducts?.products || defaultCMSData.featuredProducts.products
           },
+          paymentIntegrations: { ...defaultCMSData.paymentIntegrations, ...parsed.paymentIntegrations },
+          telegramBotToken: parsed.telegramBotToken || defaultCMSData.telegramBotToken,
           newsletter: { ...defaultCMSData.newsletter, ...parsed.newsletter },
           homeCategories: parsed.homeCategories || defaultCMSData.homeCategories,
           testimonialsSection: { ...defaultCMSData.testimonialsSection, ...parsed.testimonialsSection },

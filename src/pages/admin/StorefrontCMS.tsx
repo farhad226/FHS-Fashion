@@ -965,19 +965,19 @@ export function StorefrontCMS() {
               <div>
                 <h3 className="text-lg font-black uppercase tracking-tight mb-8">Payment Integration Methods</h3>
                 <div className="space-y-4">
-                  {(['paypal', 'stripe', 'creditCard', 'bkash', 'nagad'] as const).map((method) => (
-                    <div key={method} className="flex items-center justify-between p-6 border border-black/10 rounded-2xl">
-                      <span className="font-bold uppercase tracking-widest text-sm">{method.toUpperCase()}</span>
-                      <button
-                        onClick={() => updatePaymentIntegration(method, !formData.paymentIntegrations[method])}
-                        className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
-                          formData.paymentIntegrations[method] ? 'bg-black' : 'bg-black/10'
-                        }`}
-                      >
-                        <div className={`w-4 h-4 rounded-full bg-white transition-transform ${
-                          formData.paymentIntegrations[method] ? 'translate-x-6' : 'translate-x-0'
-                        }`} />
-                      </button>
+                  {(['paypalEmail', 'stripeApiKey', 'creditCardInfo', 'bkashNumber', 'nagadNumber'] as const).map((method) => (
+                    <div key={method} className="p-6 border border-black/10 rounded-2xl">
+                      <label className="font-bold uppercase tracking-widest text-sm mb-2 block">{method.replace(/([A-Z])/g, ' $1').toUpperCase()}</label>
+                      <input 
+                        type="text"
+                        className="w-full bg-[#F9F9F9] border border-black/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors"
+                        value={formData.paymentIntegrations[method]}
+                        onChange={(e) => setFormData(prev => ({
+                          ...prev,
+                          paymentIntegrations: { ...prev.paymentIntegrations, [method]: e.target.value }
+                        }))}
+                        placeholder={`Enter ${method.replace(/([A-Z])/g, ' $1')}`}
+                      />
                     </div>
                   ))}
                 </div>

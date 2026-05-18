@@ -1,8 +1,18 @@
 import { MessageSquare, Bot, ToggleLeft, ToggleRight, Settings as SettingsIcon, Save } from 'lucide-react';
 import { useState } from 'react';
+import { useStorefront } from '../../context/StorefrontContext';
+import { useToast } from '../../context/ToastContext';
 
 export function ChatbotManagement() {
+  const { cmsData, updateCMSData } = useStorefront();
+  const { showToast } = useToast();
+  const [formData, setFormData] = useState(cmsData);
   const [aiEnabled, setAiEnabled] = useState(true);
+
+  const handleSave = () => {
+    updateCMSData(formData);
+    showToast('Telegram configuration saved!');
+  };
 
   return (
     <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-8">
@@ -33,7 +43,7 @@ export function ChatbotManagement() {
 
               <div>
                 <label className="text-[10px] uppercase font-bold tracking-widest mb-2 block">Bot Persona Instructions</label>
-                <textarea rows={4} className="w-full bg-[#F9F9F9] border border-black/10 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-black transition-colors resize-none" defaultValue="You are the FHS Fashion AI Assistant. Help customers with size guides, order tracking, and style advice. Be professional and premium in your tone."></textarea>
+                <textarea rows={4} className="w-full bg-[#F9F9F9] border border-black/10 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-black transition-colors resize-none" defaultValue={formData.hero.subheading}></textarea>
               </div>
             </div>
           </div>
@@ -48,9 +58,18 @@ export function ChatbotManagement() {
             <div className="space-y-4">
               <div>
                 <label className="text-[10px] uppercase font-bold tracking-widest mb-2 block">Telegram Bot Token</label>
-                <input type="password" placeholder="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11" className="w-full bg-[#F9F9F9] border border-black/10 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-black transition-colors" />
+                <input 
+                  type="password" 
+                  value={formData.telegramBotToken}
+                  onChange={(e) => setFormData(prev => ({ ...prev, telegramBotToken: e.target.value }))}
+                  placeholder="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11" 
+                  className="w-full bg-[#F9F9F9] border border-black/10 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-black transition-colors" 
+                />
               </div>
-              <button className="w-full bg-black text-white px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-black/80 transition-colors flex items-center justify-center space-x-2">
+              <button 
+                onClick={handleSave}
+                className="w-full bg-black text-white px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-black/80 transition-colors flex items-center justify-center space-x-2"
+              >
                 <Save className="w-4 h-4" />
                 <span>Save Configuration</span>
               </button>
