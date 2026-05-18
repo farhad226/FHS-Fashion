@@ -960,24 +960,49 @@ export function StorefrontCMS() {
             </div>
           )}
 
-          {activeTab === 'payment' && (
-            <div className="space-y-8 max-w-2xl">
+            {activeTab === 'payment' && (
+            <div className="space-y-8 max-w-3xl">
               <div>
-                <h3 className="text-lg font-black uppercase tracking-tight mb-8">Payment Integration Methods</h3>
-                <div className="space-y-4">
-                  {(['paypalEmail', 'stripeApiKey', 'creditCardInfo', 'bkashNumber', 'nagadNumber'] as const).map((method) => (
-                    <div key={method} className="p-6 border border-black/10 rounded-2xl">
-                      <label className="font-bold uppercase tracking-widest text-sm mb-2 block">{method.replace(/([A-Z])/g, ' $1').toUpperCase()}</label>
-                      <input 
-                        type={method.includes('key') ? 'password' : 'text'}
-                        className="w-full bg-[#F9F9F9] border border-black/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors"
-                        value={formData.paymentIntegrations[method]}
-                        onChange={(e) => setFormData(prev => ({
-                          ...prev,
-                          paymentIntegrations: { ...prev.paymentIntegrations, [method]: e.target.value }
-                        }))}
-                        placeholder={`Enter ${method.replace(/([A-Z])/g, ' $1')}`}
-                      />
+                <h3 className="text-lg font-black uppercase tracking-tight mb-8">Payment Gateway Configuration</h3>
+                <div className="space-y-6">
+                  {(['paypal', 'stripe', 'bkash', 'nagad', 'cod'] as const).map((method) => (
+                    <div key={method} className="bg-white p-6 border border-black/10 rounded-2xl shadow-sm">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center space-x-3">
+                          <span className="font-bold uppercase tracking-widest text-base">{method.toUpperCase()}</span>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase flex items-center ${
+                            formData.paymentIntegrations[method as keyof typeof formData.paymentIntegrations] ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                          }`}>
+                            {formData.paymentIntegrations[method as keyof typeof formData.paymentIntegrations] ? 'Active' : 'Inactive'}
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => setFormData(prev => ({
+                            ...prev,
+                            paymentIntegrations: { ...prev.paymentIntegrations, [method]: !prev.paymentIntegrations[method as keyof typeof prev.paymentIntegrations] }
+                          }))}
+                          className={`w-12 h-6 flex items-center rounded-full p-1 transition-colors ${
+                            formData.paymentIntegrations[method as keyof typeof formData.paymentIntegrations] ? 'bg-black' : 'bg-black/10'
+                          }`}
+                        >
+                          <div className={`w-4 h-4 rounded-full bg-white transition-transform ${
+                            formData.paymentIntegrations[method as keyof typeof formData.paymentIntegrations] ? 'translate-x-6' : 'translate-x-0'
+                          }`} />
+                        </button>
+                      </div>
+
+                      {method !== 'cod' && (
+                        <div className="grid grid-cols-2 gap-4">
+                          <input 
+                            type="text"
+                            className="bg-[#F9F9F9] border border-black/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors"
+                            placeholder={`${method.toUpperCase()} API KEY/ID`}
+                          />
+                          <button className="bg-white border border-black text-black font-bold uppercase text-[10px] py-3 rounded-xl hover:bg-black hover:text-white transition-colors">
+                            Test Connection
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
