@@ -31,7 +31,13 @@ async function startServer() {
     const bot = new Telegraf(botToken);
     bot.start((ctx) => ctx.reply("Welcome to FHS Fashion!"));
     bot.on("text", (ctx) => ctx.reply(`Echo: ${ctx.message.text}`));
-    bot.launch().catch((err: any) => console.error("Telegram bot error:", err));
+    bot.launch().catch((err: any) => {
+      if (err.code === 409) {
+        console.warn("Telegram bot already running in another process (409 Conflict).");
+      } else {
+        console.error("Telegram bot error:", err);
+      }
+    });
   }
 
   
