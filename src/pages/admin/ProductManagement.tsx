@@ -4,13 +4,17 @@ import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../../lib/utils';
 import { useToast } from '../../context/ToastContext';
 
-// Using mock data for now
-const initialProducts = [
-  { id: '1', name: 'Premium Oxford Shirt', category: 'Shirts', price: '$89.00', stock: 45, status: 'Active' },
-  { id: '2', name: 'Heavyweight Cotton Tee', category: 'T-Shirts', price: '$45.00', stock: 12, status: 'Low Stock' },
-  { id: '3', name: 'Tapered Wool Trousers', category: 'Pants', price: '$129.00', stock: 0, status: 'Out of Stock' },
-  { id: '4', name: 'Sculptural Eyewear', category: 'Accessories', price: '$189.00', stock: 89, status: 'Active' },
-];
+import { PRODUCTS } from '../../constants';
+
+// Using products from constants
+const initialProducts = PRODUCTS.map(p => ({
+  id: p.id.toString(),
+  name: p.name,
+  category: p.category,
+  price: p.price,
+  stock: 100, // Default stock for imported products
+  status: 'Active' // Default status
+}));
 
 export function ProductManagement() {
   const [products, setProducts] = useState(initialProducts);

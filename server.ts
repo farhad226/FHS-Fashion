@@ -8,14 +8,25 @@ import Stripe from "stripe";
 
 dotenv.config();
 
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY || "",
-  httpOptions: {
-    headers: {
-      'User-Agent': 'aistudio-build',
+let aiClient: GoogleGenAI | null = null;
+
+function getAIClient(): GoogleGenAI {
+  if (!aiClient) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error('GEMINI_API_KEY environment variable is required');
     }
+    aiClient = new GoogleGenAI({
+      apiKey: apiKey,
+      httpOptions: {
+        headers: {
+          'User-Agent': 'aistudio-build',
+        }
+      }
+    });
   }
-});
+  return aiClient;
+}
 
 async function startServer() {
   const app = express();
@@ -61,8 +72,8 @@ async function startServer() {
   app.post("/api/gemini/chat", async (req, res) => {
     try {
       const { message, history } = req.body;
-      const chat = ai.chats.create({
-        model: "gemini-3-flash-preview",
+      const chat = getAIClient().chats.create({
+        model: "gemini-1.5-flash",
         config: {
           systemInstruction: "You are the FHS Fashion AI Assistant. You help customers with finding premium men's clothing, size guides, order tracking, and style advice. Keep your tone professional, premium, and helpful.",
         }
@@ -82,8 +93,8 @@ async function startServer() {
       const { preferences } = req.body;
       const prompt = `Based on these customer preferences: ${preferences}, suggest 3 types of men's clothing categories or styles from FHS Fashion (Men's Collections, Shirts, T-Shirts, Pants, Shoes, Sunglasses). Return as JSON: { "suggestions": [{ "category": "string", "reason": "string" }] }`;
       
-      const result = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
+      const result = await getAIClient().models.generateContent({
+        model: "gemini-1.5-flash",
         contents: [{ parts: [{ text: prompt }] }],
         config: {
           responseMimeType: "application/json"
