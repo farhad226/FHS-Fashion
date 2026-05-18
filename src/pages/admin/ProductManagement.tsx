@@ -20,10 +20,24 @@ export function ProductManagement() {
   const fetchProducts = async () => {
     try {
       const { data, error } = await supabase.from('products').select('*');
-      if (error) {
-        throw error;
+      if (error) throw error;
+      
+      if (!data || data.length === 0) {
+        console.log('No products found, inserting default products.');
+        const defaultProducts = PRODUCTS.map(p => ({
+            name: p.name,
+            category: p.category,
+            price: p.price,
+            stock: 100, // Default stock
+            status: 'Active',
+            image: p.image
+        }));
+        const { error: insertError } = await supabase.from('products').insert(defaultProducts);
+        if (insertError) throw insertError;
+        fetchProducts(); // Fetch again after insertion
+      } else {
+        setProducts(data);
       }
-      setProducts(data || []);
     } catch (error) {
       console.error('Error fetching products:', error);
       showToast('Error fetching products. Please check Supabase configuration.');

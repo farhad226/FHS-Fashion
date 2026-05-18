@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { PRODUCTS } from '../constants';
+import React, { useState, useEffect } from 'react';
 import { Search, Filter, Grid, List, ChevronDown, ArrowRight, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
@@ -7,6 +6,7 @@ import { cn } from '../lib/utils';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
 import { useWishlist } from '../context/WishlistContext';
+import { supabase } from '../lib/supabase';
 
 export function Shop() {
   const { addToCart } = useCart();
@@ -14,15 +14,43 @@ export function Shop() {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [view, setView] = useState<'grid' | 'list'>('grid');
   const [activeCategory, setActiveCategory] = useState('All');
+  const [activeSize, setActiveSize] = useState('All');
+  const [activeColor, setActiveColor] = useState('All');
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
   const [sortBy, setSortBy] = useState('Featured');
   const [showSort, setShowSort] = useState(false);
+  const [products, setProducts] = useState<any[]>([]);
+  
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const { data, error } = await supabase.from('products').select('*');
+      if (error) throw error;
+      setProducts(data || []);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      showToast('Error fetching products. Please check Supabase configuration.');
+    }
+  };
   
   const categories = ['All', 'Shirts', 'T-Shirts', 'Pants', 'Shoes', 'Accessories'];
+  const sizes = ['All', 'S', 'M', 'L', 'XL'];
+  const colors = ['All', 'Black', 'White', 'Blue', 'Grey'];
   const sortOptions = ['Featured', 'Newest', 'Price: Low to High', 'Price: High to Low'];
   
-  const filteredProducts = activeCategory === 'All' 
-    ? PRODUCTS 
-    : PRODUCTS.filter(p => p.category === activeCategory);
+  const filteredProducts = products.filter(p => {
+    const matchesCategory = activeCategory === 'All' || p.category === activeCategory;
+    // Assuming these fields might exist now or soon, if not, logic will just pass them
+    const matchesSize = activeSize === 'All' || (p.size && p.size === activeSize);
+    const matchesColor = activeColor === 'All' || (p.color && p.color === activeColor);
+    const priceValue = parseFloat(p.price.replace('$', '') || '0');
+    const matchesPrice = priceValue >= priceRange[0] && priceValue <= priceRange[1];
+    
+    return matchesCategory && matchesSize && matchesColor && matchesPrice;
+  });
 
 
   return (
@@ -51,22 +79,33 @@ export function Shop() {
       {/* Controls Bar */}
       <div className="sticky top-[4rem] md:top-[4.5rem] z-40 bg-white/95 backdrop-blur-md border-y border-black/5 py-4 md:py-8 mb-6 md:mb-20 px-2 flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-0">
         {/* Categories */}
-        <div className="flex items-center space-x-6 md:space-x-10 overflow-x-auto no-scrollbar pb-1 md:pb-0">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={cn(
-                "text-[9px] md:text-[10px] uppercase tracking-[0.25em] font-bold transition-all shrink-0 relative py-2",
-                activeCategory === cat ? "text-black" : "text-black/30 hover:text-black"
-              )}
-            >
-              {cat}
-              {activeCategory === cat && (
-                <motion.div layoutId="cat-indicator" className="absolute bottom-0 left-0 w-full h-[2px] bg-black" />
-              )}
-            </button>
-          ))}
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center space-x-6 md:space-x-10 overflow-x-auto no-scrollbar pb-1 md:pb-0">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={cn(
+                  "text-[9px] md:text-[10px] uppercase tracking-[0.25em] font-bold transition-all shrink-0 relative py-2",
+                  activeCategory === cat ? "text-black" : "text-black/30 hover:text-black"
+                )}
+              >
+                {cat}
+                {activeCategory === cat && (
+                  <motion.div layoutId="cat-indicator" className="absolute bottom-0 left-0 w-full h-[2px] bg-black" />
+                )}
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center gap-4 text-[9px] uppercase tracking-[0.25em] font-bold">
+            <select value={activeSize} onChange={(e) => setActiveSize(e.target.value)} className="bg-black/5 px-2 py-1">
+              {sizes.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+            <select value={activeColor} onChange={(e) => setActiveColor(e.target.value)} className="bg-black/5 px-2 py-1">
+              {colors.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+            <input type="number" placeholder="Max Price" onChange={(e) => setPriceRange([0, parseFloat(e.target.value) || 500])} className="bg-black/5 px-2 py-1 w-20" />
+          </div>
         </div>
         
         <div className="flex items-center space-x-4 md:space-x-8">
