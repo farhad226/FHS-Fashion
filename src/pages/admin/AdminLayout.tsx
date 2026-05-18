@@ -11,7 +11,8 @@ import {
   Menu,
   X,
   MessageSquare,
-  LayoutTemplate
+  LayoutTemplate,
+  Code
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '../../lib/utils';
@@ -30,6 +31,7 @@ export function AdminLayout() {
     { name: 'Storefront CMS', path: '/admin/cms', icon: LayoutTemplate },
     { name: 'Support Bot', path: '/admin/support', icon: MessageSquare },
     { name: 'ERP System', path: '/admin/erp', icon: Briefcase },
+    { name: 'Custom CSS', path: '/admin/css', icon: Code },
     { name: 'Marketing', path: '/admin/marketing', icon: Megaphone },
     { name: 'Settings', path: '/admin/settings', icon: Settings },
   ];

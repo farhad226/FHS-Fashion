@@ -12,7 +12,7 @@ import { Checkout } from './pages/Checkout';
 import { Dashboard } from './pages/Dashboard';
 import { AdminLayout } from './pages/admin/AdminLayout';
 import { Overview } from './pages/admin/Overview';
-import { StorefrontProvider } from './context/StorefrontContext';
+import { StorefrontProvider, useStorefront } from './context/StorefrontContext';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { ToastProvider } from './context/ToastContext';
@@ -30,6 +30,7 @@ import { MarketingTools } from './pages/admin/MarketingTools';
 import { AdminSettings } from './pages/admin/AdminSettings';
 import { StorefrontCMS } from './pages/admin/StorefrontCMS';
 import { ChatbotManagement } from './pages/admin/ChatbotManagement';
+import { CustomCSS } from './pages/admin/CustomCSS';
 
 const StorefrontLayout = () => {
   return (
@@ -45,6 +46,48 @@ const StorefrontLayout = () => {
   );
 };
 
+const MainContent = () => {
+  const { cmsData } = useStorefront();
+  return (
+    <Router>
+      <style>{cmsData.customCSS}</style>
+      <Routes>
+        {/* Storefront Layout with Navbar and Footer */}
+        <Route element={<StorefrontLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/reviews" element={<Reviews />} />
+          <Route path="/category/:name" element={<Shop />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/account/profile" element={<Dashboard />} />
+          <Route path="/login" element={<Login />} />
+        </Route>
+
+        {/* Admin Layout without Navbar and Footer */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="dashboard" element={<Overview />} />
+          <Route path="products" element={<ProductManagement />} />
+          <Route path="inventory" element={<InventoryManagement />} />
+          <Route path="orders" element={<OrderManagement />} />
+          <Route path="customers" element={<CustomerManagement />} />
+          <Route path="cms" element={<StorefrontCMS />} />
+          <Route path="support" element={<ChatbotManagement />} />
+          <Route path="erp" element={<ERPSystem />} />
+          <Route path="css" element={<CustomCSS />} />
+          <Route path="marketing" element={<MarketingTools />} />
+          <Route path="settings" element={<AdminSettings />} />
+          <Route index element={<Overview />} />
+        </Route>
+      </Routes>
+    </Router>
+  );
+};
+
 export default function App() {
   return (
     <StorefrontProvider>
@@ -52,40 +95,7 @@ export default function App() {
         <ToastProvider>
           <WishlistProvider>
             <CartProvider>
-              <Router>
-                <Routes>
-                  {/* Storefront Layout with Navbar and Footer */}
-                  <Route element={<StorefrontLayout />}>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/shop" element={<Shop />} />
-                    <Route path="/about" element={<About />} />
-                    <Route path="/reviews" element={<Reviews />} />
-                    <Route path="/category/:name" element={<Shop />} />
-                    <Route path="/product/:id" element={<ProductDetail />} />
-                    <Route path="/wishlist" element={<Wishlist />} />
-                    <Route path="/cart" element={<CartPage />} />
-                    <Route path="/checkout" element={<Checkout />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/account/profile" element={<Dashboard />} />
-                    <Route path="/login" element={<Login />} />
-                  </Route>
-
-                  {/* Admin Layout without Navbar and Footer */}
-                  <Route path="/admin" element={<AdminLayout />}>
-                    <Route path="dashboard" element={<Overview />} />
-                    <Route path="products" element={<ProductManagement />} />
-                    <Route path="inventory" element={<InventoryManagement />} />
-                    <Route path="orders" element={<OrderManagement />} />
-                    <Route path="customers" element={<CustomerManagement />} />
-                    <Route path="cms" element={<StorefrontCMS />} />
-                    <Route path="support" element={<ChatbotManagement />} />
-                    <Route path="erp" element={<ERPSystem />} />
-                    <Route path="marketing" element={<MarketingTools />} />
-                    <Route path="settings" element={<AdminSettings />} />
-                    <Route index element={<Overview />} />
-                  </Route>
-                </Routes>
-              </Router>
+              <MainContent />
             </CartProvider>
           </WishlistProvider>
         </ToastProvider>

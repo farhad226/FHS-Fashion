@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { ShoppingBag, User, Search, Menu, X, ArrowRight, Heart } from 'lucide-react';
+import { ShoppingBag, User, Search, Menu, X, ArrowRight, Heart, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../../lib/utils';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useAuth } from '../../context/AuthContext';
+import { supabase } from '../../lib/supabase';
 
 import { useStorefront } from '../../context/StorefrontContext';
 
@@ -21,6 +22,12 @@ export function Navbar() {
   const { totalWishlistItems } = useWishlist();
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/');
+    setIsOpen(false);
+  };
 
   const dummyProducts = [
     { id: 1, name: 'Essentials White Tee', category: 'T-Shirts' },
@@ -254,7 +261,7 @@ export function Navbar() {
               </Link>
 
               <Link 
-                to={user ? "/dashboard" : "/login"} 
+                to={user ? "/dashboard" : "/login"}
                 className={cn(
                   "hidden md:block px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all",
                   user ? "bg-[#F5F5F5] text-black" : "bg-black text-white hover:bg-black/80"
@@ -262,6 +269,15 @@ export function Navbar() {
               >
                 {user ? user.user_metadata?.full_name?.split(' ')[0] : 'Sign in'}
               </Link>
+              
+              {user && (
+                <button 
+                  onClick={handleLogout}
+                  className="hidden md:block p-2 text-black/40 hover:text-black transition-colors"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              )}
 
               {/* Mobile Menu Button */}
               <button 
@@ -350,14 +366,25 @@ export function Navbar() {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
                   >
-                    <Link 
-                      to={user ? "/dashboard" : "/login"}
-                      onClick={() => setIsOpen(false)}
-                      className="flex items-center justify-between p-4 bg-black text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-opacity"
-                    >
-                      {user ? `Welcome, ${user.user_metadata?.full_name?.split(' ')[0] || 'Member'}` : 'Sign In / Account'}
-                      <User className="w-4 h-4" />
-                    </Link>
+                    <div className="flex items-center gap-2">
+                      <Link 
+                        to={user ? "/dashboard" : "/login"}
+                        onClick={() => setIsOpen(false)}
+                        className="flex-1 flex items-center justify-between p-4 bg-black text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-opacity"
+                      >
+                        {user ? `Welcome, ${user.user_metadata?.full_name?.split(' ')[0] || 'Member'}` : 'Sign In / Account'}
+                        <User className="w-4 h-4" />
+                      </Link>
+                      
+                      {user && (
+                        <button 
+                          onClick={handleLogout}
+                          className="p-4 bg-[#F5F5F5] text-black rounded-xl hover:bg-black/10 transition-colors"
+                        >
+                          <LogOut className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
                   </motion.div>
                 </div>
               </div>

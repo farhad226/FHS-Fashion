@@ -99,6 +99,7 @@ export interface CMSData {
   footer: {
     description: string;
   };
+  customCSS: string;
 }
 
 const defaultCMSData: CMSData = {
@@ -197,7 +198,8 @@ const defaultCMSData: CMSData = {
   },
   footer: {
     description: "Curating premium menswear for the modern gentleman. Elevate your everyday style with our timeless pieces designed for purpose."
-  }
+  },
+  customCSS: ''
 };
 
 interface StorefrontContextType {
@@ -235,6 +237,7 @@ export function StorefrontProvider({ children }: { children: ReactNode }) {
           blogPosts: parsed.blogPosts || defaultCMSData.blogPosts,
           about: { ...defaultCMSData.about, ...parsed.about },
           footer: { ...defaultCMSData.footer, ...parsed.footer },
+          customCSS: parsed.customCSS || defaultCMSData.customCSS,
         };
       } catch (e) {
         return defaultCMSData;
