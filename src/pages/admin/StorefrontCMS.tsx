@@ -969,7 +969,7 @@ export function StorefrontCMS() {
                     <div key={method} className="p-6 border border-black/10 rounded-2xl">
                       <label className="font-bold uppercase tracking-widest text-sm mb-2 block">{method.replace(/([A-Z])/g, ' $1').toUpperCase()}</label>
                       <input 
-                        type="text"
+                        type={method.includes('key') ? 'password' : 'text'}
                         className="w-full bg-[#F9F9F9] border border-black/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors"
                         value={formData.paymentIntegrations[method]}
                         onChange={(e) => setFormData(prev => ({
