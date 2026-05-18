@@ -66,26 +66,18 @@ export function Home() {
           <div className="absolute inset-0 bg-black/40" />
         </div>
 
-        <div className="relative z-10 w-full px-[15px] md:px-6 lg:px-[100px] h-full flex items-end pb-12 md:pb-24">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end w-full">
+        <div className="relative z-10 w-full px-[15px] md:px-6 lg:px-[100px] h-full flex items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-              className="lg:col-span-7"
+              className="lg:col-span-8 space-y-8"
             >
-              <h1 className="text-2xl md:text-5xl lg:text-[64px] font-sans font-black uppercase tracking-tighter leading-[1] text-white whitespace-pre-line">
+              <h1 className="text-4xl md:text-6xl lg:text-[80px] font-sans font-black uppercase tracking-tighter leading-[0.9] text-white whitespace-pre-line">
                 {cmsData.hero.heading}
               </h1>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="lg:col-span-5 flex flex-col items-start lg:items-end lg:text-left"
-            >
-              <div className="max-w-md lg:ml-auto">
+              <div className="max-w-md">
                 <p className="text-base md:text-lg text-white/90 mb-10 leading-relaxed font-light whitespace-pre-line">
                   {cmsData.hero.subheading}
                 </p>
@@ -217,17 +209,17 @@ export function Home() {
                  className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-all duration-[1.5s] ease-out"
                />
                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors" />
-               <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-between">
+                <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-between">
                   <div className="flex justify-between items-start">
-                    <span className="text-[11px] font-mono text-black/30">0{i+1}</span>
-                    <span className="text-[10px] uppercase tracking-widest font-bold text-black/20 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">{cat.countText}</span>
+                    <span className="text-[11px] font-mono text-white/50">0{i+1}</span>
+                    <span className="text-[10px] uppercase tracking-widest font-bold text-white/40 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">{cat.countText}</span>
                   </div>
-                  <div>
+                  <div className="text-white">
                     <h3 className="text-2xl md:text-3xl font-bold uppercase tracking-tighter mb-4 md:mb-6 translate-y-0 md:translate-y-4 group-hover:translate-y-0 transition-transform duration-500">{cat.title}</h3>
-                    <div className="h-[1px] w-full md:w-0 bg-black group-hover:w-full transition-all duration-700 mb-6 md:mb-8" />
+                    <div className="h-[1px] w-full md:w-0 bg-white group-hover:w-full transition-all duration-700 mb-6 md:mb-8" />
                     <Link 
                       to={cat.url} 
-                      className="inline-flex items-center space-x-3 text-[10px] uppercase tracking-[0.3em] font-bold opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-0 md:translate-y-4 group-hover:translate-y-0"
+                      className="inline-flex items-center space-x-3 text-[10px] uppercase tracking-[0.3em] font-bold opacity-100 md:opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-0 md:translate-y-4 group-hover:translate-y-0 hover:text-white/80"
                     >
                       <span>Explore</span>
                       <ArrowRight className="w-4 h-4" />
