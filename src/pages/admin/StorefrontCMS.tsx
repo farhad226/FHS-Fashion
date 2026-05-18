@@ -71,8 +71,56 @@ export function StorefrontCMS() {
     setFormData(prev => ({ ...prev, trending: { ...prev.trending, [field]: value } }));
   };
 
-  const updateFeaturedProducts = (field: keyof CMSData['featuredProducts'], value: string) => {
+  const updateFeaturedProducts = (field: keyof Omit<CMSData['featuredProducts'], 'products'>, value: string) => {
     setFormData(prev => ({ ...prev, featuredProducts: { ...prev.featuredProducts, [field]: value } }));
+  };
+
+  const handleFeaturedProductChange = (index: number, field: keyof CMSData['featuredProducts']['products'][0], value: string) => {
+    const newProducts = [...formData.featuredProducts.products];
+    newProducts[index] = { ...newProducts[index], [field]: value };
+    setFormData(prev => ({ ...prev, featuredProducts: { ...prev.featuredProducts, products: newProducts } }));
+  };
+
+  const handleFeaturedProductImageUpload = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          handleFeaturedProductChange(index, 'image', reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const addFeaturedProduct = () => {
+    const newProduct = {
+      id: `f${Date.now()}`,
+      name: 'New Product',
+      price: '$0.00',
+      image: '',
+      tag: 'New',
+      category: 'Shirt'
+    };
+    setFormData(prev => ({
+      ...prev,
+      featuredProducts: {
+        ...prev.featuredProducts,
+        products: [...prev.featuredProducts.products, newProduct]
+      }
+    }));
+  };
+
+  const removeFeaturedProduct = (index: number) => {
+    const newProducts = formData.featuredProducts.products.filter((_, i) => i !== index);
+    setFormData(prev => ({
+      ...prev,
+      featuredProducts: {
+        ...prev.featuredProducts,
+        products: newProducts
+      }
+    }));
   };
 
   const updateNewsletterImage = (value: string) => {
@@ -688,48 +736,114 @@ export function StorefrontCMS() {
           )}
 
           {activeTab === 'featured' && (
-            <div className="space-y-8 max-w-2xl">
+            <div className="space-y-12 max-w-4xl">
               <div>
-                <h3 className="text-lg font-black uppercase tracking-tight mb-8">Featured Products Section</h3>
+                <h3 className="text-lg font-black uppercase tracking-tight mb-8">Featured Products Section Settings</h3>
                 <div className="space-y-6">
-                  <div>
-                    <label className="text-[10px] uppercase font-bold tracking-widest mb-2 block">Section Subtitle</label>
-                    <input 
-                      type="text" 
-                      className="w-full bg-[#F9F9F9] border border-black/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors" 
-                      value={formData.featuredProducts.sectionName}
-                      onChange={(e) => updateFeaturedProducts('sectionName', e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-[10px] uppercase font-bold tracking-widest mb-2 block">Main Heading</label>
-                    <textarea 
-                      rows={2} 
-                      className="w-full bg-[#F9F9F9] border border-black/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors resize-none" 
-                      value={formData.featuredProducts.heading}
-                      onChange={(e) => updateFeaturedProducts('heading', e.target.value)}
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="text-[10px] uppercase font-bold tracking-widest mb-2 block">Button Text</label>
+                      <label className="text-[10px] uppercase font-bold tracking-widest mb-2 block">Section Subtitle</label>
                       <input 
                         type="text" 
                         className="w-full bg-[#F9F9F9] border border-black/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors" 
-                        value={formData.featuredProducts.buttonText}
-                        onChange={(e) => updateFeaturedProducts('buttonText', e.target.value)}
+                        value={formData.featuredProducts.sectionName}
+                        onChange={(e) => updateFeaturedProducts('sectionName', e.target.value)}
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] uppercase font-bold tracking-widest mb-2 block">Button URL</label>
+                      <label className="text-[10px] uppercase font-bold tracking-widest mb-2 block">Main Heading</label>
                       <input 
                         type="text" 
                         className="w-full bg-[#F9F9F9] border border-black/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors" 
-                        value={formData.featuredProducts.buttonUrl}
-                        onChange={(e) => updateFeaturedProducts('buttonUrl', e.target.value)}
+                        value={formData.featuredProducts.heading}
+                        onChange={(e) => updateFeaturedProducts('heading', e.target.value)}
                       />
                     </div>
                   </div>
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-8">
+                  <h3 className="text-lg font-black uppercase tracking-tight">Manage Featured Items</h3>
+                  <button 
+                    onClick={addFeaturedProduct}
+                    className="bg-black text-white px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center space-x-2"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Add Item</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {formData.featuredProducts.products.map((p, index) => (
+                    <div key={p.id} className="border border-black/10 p-6 rounded-2xl relative group">
+                      <button 
+                         onClick={() => removeFeaturedProduct(index)}
+                         className="absolute top-4 right-4 text-red-500 p-2 hover:bg-red-50 rounded-lg transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+
+                      <div className="flex gap-6">
+                        <div className="w-32 h-32 bg-gray-100 rounded-xl overflow-hidden relative group/img shrink-0 border border-black/5">
+                          {p.image ? (
+                            <img src={p.image} className="w-full h-full object-cover" alt="product" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-black/20 font-bold uppercase text-[8px]">No Image</div>
+                          )}
+                          <label className="absolute inset-0 bg-black/60 text-white flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity cursor-pointer text-[8px] uppercase tracking-widest font-black">
+                            Update
+                            <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFeaturedProductImageUpload(index, e)} />
+                          </label>
+                        </div>
+
+                        <div className="flex-1 space-y-4">
+                          <div>
+                            <label className="text-[9px] uppercase font-bold tracking-widest text-black/40 mb-1 block">Product Name</label>
+                            <input 
+                              type="text" 
+                              className="w-full bg-[#F9F9F9] border border-black/10 rounded-lg px-3 py-2 text-xs font-bold" 
+                              value={p.name}
+                              onChange={(e) => handleFeaturedProductChange(index, 'name', e.target.value)}
+                            />
+                          </div>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div>
+                              <label className="text-[9px] uppercase font-bold tracking-widest text-black/40 mb-1 block">Price</label>
+                              <input 
+                                type="text" 
+                                className="w-full bg-[#F9F9F9] border border-black/10 rounded-lg px-3 py-2 text-xs" 
+                                value={p.price}
+                                onChange={(e) => handleFeaturedProductChange(index, 'price', e.target.value)}
+                              />
+                            </div>
+                            <div>
+                              <label className="text-[9px] uppercase font-bold tracking-widest text-black/40 mb-1 block">Category</label>
+                              <select 
+                                className="w-full bg-[#F9F9F9] border border-black/10 rounded-lg px-3 py-2 text-xs outline-none"
+                                value={p.category}
+                                onChange={(e) => handleFeaturedProductChange(index, 'category', e.target.value)}
+                              >
+                                {['Jacket', 'Shirt', 'Suit', 'Pants', 'Shoes', 'Wallet', 'Bag', 'Belt', 'Hat', 'Glasses', 'Tie'].map(c => (
+                                  <option key={c} value={c}>{c}</option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="text-[9px] uppercase font-bold tracking-widest text-black/40 mb-1 block">Tag (e.g. New Arrivals)</label>
+                            <input 
+                              type="text" 
+                              className="w-full bg-[#F9F9F9] border border-black/10 rounded-lg px-3 py-2 text-xs" 
+                              value={p.tag}
+                              onChange={(e) => handleFeaturedProductChange(index, 'tag', e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

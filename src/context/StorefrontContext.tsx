@@ -28,6 +28,14 @@ export interface CMSData {
     heading: string;
     buttonText: string;
     buttonUrl: string;
+    products: Array<{
+      id: string;
+      name: string;
+      price: string;
+      image: string;
+      tag: string;
+      category: string;
+    }>;
   };
   newsletter: {
     bgImage: string;
@@ -111,7 +119,17 @@ const defaultCMSData: CMSData = {
     sectionName: "PRODUCT",
     heading: "Your fashion, our product",
     buttonText: "More collection",
-    buttonUrl: "/shop"
+    buttonUrl: "/shop",
+    products: [
+      { id: 'f1', name: 'Premium Oxford Shirt', price: '$89.00', image: 'https://images.unsplash.com/photo-1598033129183-c4f50c717658?auto=format&fit=crop&q=80&w=800', tag: 'New Season', category: 'Shirt' },
+      { id: 'f2', name: 'Heavyweight Cotton Tee', price: '$45.00', image: 'https://images.unsplash.com/photo-1562157873-818bc0726f68?auto=format&fit=crop&q=80&w=800', tag: 'Essentials', category: 'Shirt' },
+      { id: 'f3', name: 'Tapered Wool Trousers', price: '$129.00', image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=800', tag: 'Limited', category: 'Pants' },
+      { id: 'f4', name: 'Sculptural Eyewear', price: '$189.00', image: 'https://images.unsplash.com/photo-1511499767390-a73a25830ce4?auto=format&fit=crop&q=80&w=800', tag: 'Accessories', category: 'Glasses' },
+      { id: 'f5', name: 'Technical Bomber Jacket', price: '$245.00', image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&q=80&w=800', tag: 'Archive', category: 'Jacket' },
+      { id: 'f6', name: 'Minimalist Leather Tote', price: '$320.00', image: 'https://images.unsplash.com/photo-1584917666455-5201625902b6?auto=format&fit=crop&q=80&w=800', tag: 'Handcrafted', category: 'Bag' },
+      { id: 'f7', name: 'Structural Overshirt', price: '$110.00', image: 'https://images.unsplash.com/photo-1617137968427-859247f04322?auto=format&fit=crop&q=80&w=800', tag: 'New Season', category: 'Shirt' },
+      { id: 'f8', name: 'Linen Utility Shorts', price: '$75.00', image: 'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?auto=format&fit=crop&q=80&w=800', tag: 'Summer 24', category: 'Pants' },
+    ]
   },
   newsletter: {
     bgImage: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&q=80&w=2000",
@@ -184,7 +202,11 @@ export function StorefrontProvider({ children }: { children: ReactNode }) {
           hero: { ...defaultCMSData.hero, ...parsed.hero },
           flashSale: { ...defaultCMSData.flashSale, ...parsed.flashSale },
           trending: { ...defaultCMSData.trending, ...parsed.trending },
-          featuredProducts: { ...defaultCMSData.featuredProducts, ...parsed.featuredProducts },
+          featuredProducts: { 
+            ...defaultCMSData.featuredProducts, 
+            ...parsed.featuredProducts,
+            products: parsed.featuredProducts?.products || defaultCMSData.featuredProducts.products
+          },
           newsletter: { ...defaultCMSData.newsletter, ...parsed.newsletter },
           homeCategories: parsed.homeCategories || defaultCMSData.homeCategories,
           testimonialsSection: { ...defaultCMSData.testimonialsSection, ...parsed.testimonialsSection },

@@ -48,17 +48,8 @@ export function Home() {
     showToast(`${product.name} added to your bag`);
   };
 
-  // Featured items logic
-  const featured = [
-    { id: 1, name: 'Premium Oxford Shirt', price: '$89.00', image: 'https://images.unsplash.com/photo-1598033129183-c4f50c717658?auto=format&fit=crop&q=80&w=800', tag: 'New Season', category: 'Shirt' },
-    { id: 2, name: 'Heavyweight Cotton Tee', price: '$45.00', image: 'https://images.unsplash.com/photo-1562157873-818bc0726f68?auto=format&fit=crop&q=80&w=800', tag: 'Essentials', category: 'Shirt' },
-    { id: 3, name: 'Tapered Wool Trousers', price: '$129.00', image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=800', tag: 'Limited', category: 'Pants' },
-    { id: 4, name: 'Sculptural Eyewear', price: '$189.00', image: 'https://images.unsplash.com/photo-1511499767390-a73a25830ce4?auto=format&fit=crop&q=80&w=800', tag: 'Accessories', category: 'Glasses' },
-    { id: 5, name: 'Technical Bomber Jacket', price: '$245.00', image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&q=80&w=800', tag: 'Archive', category: 'Jacket' },
-    { id: 6, name: 'Minimalist Leather Tote', price: '$320.00', image: 'https://images.unsplash.com/photo-1584917666455-5201625902b6?auto=format&fit=crop&q=80&w=800', tag: 'Handcrafted', category: 'Bag' },
-    { id: 7, name: 'Structural Overshirt', price: '$110.00', image: 'https://images.unsplash.com/photo-1617137968427-859247f04322?auto=format&fit=crop&q=80&w=800', tag: 'New Season', category: 'Shirt' },
-    { id: 8, name: 'Linen Utility Shorts', price: '$75.00', image: 'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?auto=format&fit=crop&q=80&w=800', tag: 'Summer 24', category: 'Pants' },
-  ];
+  // Featured items logic from CMS
+  const featured = cmsData.featuredProducts.products;
 
   const filteredFeatured = featured.filter(p => p.category === selectedCategory);
 
