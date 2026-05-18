@@ -6,18 +6,33 @@ import { useNavigate } from 'react-router-dom';
 
 export function Login() {
   const navigate = useNavigate();
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [error, setError] = React.useState('');
 
-  async function handleGoogleLogin() {
+  async function handleEmailLogin() {
     try {
-      await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin,
-        },
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
-      // The user will be redirected to Google for authentication and then back to your app
-    } catch (err) {
-      console.error(err);
+      if (error) throw error;
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.message);
+    }
+  }
+
+  async function handleSignUp() {
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+      if (error) throw error;
+      setError('Check your email for confirmation!');
+    } catch (err: any) {
+      setError(err.message);
     }
   }
 
@@ -32,13 +47,37 @@ export function Login() {
         <p className="text-sm text-black/50 tracking-widest uppercase mb-12">Experience premium fashion with personalized AI styling.</p>
         
         <div className="space-y-4">
-          <button 
-            onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center space-x-3 border border-black py-4 hover:bg-black hover:text-white transition-all text-xs uppercase tracking-widest font-bold"
-          >
-            <Globe className="w-4 h-4" />
-            <span>Continue with Google</span>
-          </button>
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full border border-black/20 p-4 text-xs uppercase"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full border border-black/20 p-4 text-xs uppercase"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <div className="flex gap-4">
+            <button 
+              onClick={handleEmailLogin}
+              className="flex-1 flex items-center justify-center space-x-3 border border-black py-4 hover:bg-black hover:text-white transition-all text-xs uppercase tracking-widest font-bold"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>Sign In</span>
+            </button>
+            <button 
+              onClick={handleSignUp}
+              className="flex-1 flex items-center justify-center space-x-3 border border-black py-4 hover:bg-black hover:text-white transition-all text-xs uppercase tracking-widest font-bold"
+            >
+              <span>Sign Up</span>
+            </button>
+          </div>
+          
+          {error && <p className="text-red-500 text-xs">{error}</p>}
           
           <button 
             onClick={() => navigate('/shop')}
