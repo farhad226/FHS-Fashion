@@ -1,39 +1,34 @@
 import { Plus, Search, Filter, MoreVertical, Edit2, Trash2, X, Upload } from 'lucide-react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../../lib/utils';
 import { useToast } from '../../context/ToastContext';
+import { supabase } from '../../lib/supabase';
 
 import { PRODUCTS } from '../../constants';
 
-// Using products from constants
-const initialProducts = PRODUCTS.map(p => ({
-  id: p.id.toString(),
-  name: p.name,
-  category: p.category,
-  price: p.price,
-  stock: 100, // Default stock for imported products
-  status: 'Active', // Default status
-  image: p.image // Included image
-}));
-
 export function ProductManagement() {
-  const [products, setProducts] = useState(initialProducts);
+  const [products, setProducts] = useState<any[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const { showToast } = useToast();
 
-  // Persistence
-  useState(() => {
-    const saved = localStorage.getItem('products');
-    if (saved) {
-      setProducts(JSON.parse(saved));
-    }
-  });
-
   useEffect(() => {
-    localStorage.setItem('products', JSON.stringify(products));
-  }, [products]);
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const { data, error } = await supabase.from('products').select('*');
+      if (error) {
+        throw error;
+      }
+      setProducts(data || []);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      showToast('Error fetching products. Please check Supabase configuration.');
+    }
+  };
 
   // Form State
   const [productName, setProductName] = useState('');
@@ -117,40 +112,46 @@ export function ProductManagement() {
     setImages(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleSaveProduct = () => {
+  const handleSaveProduct = async () => {
     if (!productName || !price) {
       showToast('Please provide at least a product name and price');
       return;
     }
 
-    if (editingId) {
-      setProducts(products.map(p => {
-        if (p.id === editingId) {
-          return {
-            ...p,
-            name: productName,
-            category: category,
-            price: `$${parseFloat(price.replace('$', '') || '0').toFixed(2)}`,
-            stock: parseInt(stock || '0'),
-            status: parseInt(stock || '0') > 10 ? 'Active' : (parseInt(stock || '0') > 0 ? 'Low Stock' : 'Out of Stock'),
-            image: images.length > 0 ? images[0] : p.image // Save first uploaded image as product image
-          };
-        }
-        return p;
-      }));
-      showToast('Product updated successfully!');
-    } else {
-      const newProduct = {
-        id: (products.length + 1).toString(),
-        name: productName,
-        category: category,
-        price: `$${parseFloat(price.replace('$', '') || '0').toFixed(2)}`,
-        stock: parseInt(stock || '0'),
-        status: parseInt(stock || '0') > 10 ? 'Active' : (parseInt(stock || '0') > 0 ? 'Low Stock' : 'Out of Stock'),
-        image: images.length > 0 ? images[0] : '' // Save first uploaded image as product image
-      };
-      setProducts(prev => [newProduct, ...prev]);
-      showToast('Product added successfully!');
+    const priceValue = `$${parseFloat(price.replace('$', '') || '0').toFixed(2)}`;
+    const statusValue = parseInt(stock || '0') > 10 ? 'Active' : (parseInt(stock || '0') > 0 ? 'Low Stock' : 'Out of Stock');
+    const imageValue = images.length > 0 ? images[0] : '';
+    
+    const productData = {
+      name: productName,
+      category: category,
+      price: priceValue,
+      stock: parseInt(stock || '0'),
+      status: statusValue,
+      image: imageValue
+    };
+
+    try {
+      if (editingId) {
+        const { error } = await supabase
+          .from('products')
+          .update(productData)
+          .eq('id', editingId);
+
+        if (error) throw error;
+        showToast('Product updated successfully!');
+      } else {
+        const { error } = await supabase
+          .from('products')
+          .insert([productData]);
+
+        if (error) throw error;
+        showToast('Product added successfully!');
+      }
+      fetchProducts();
+    } catch (error) {
+      console.error('Error saving product:', error);
+      showToast('Error saving product');
     }
 
     setIsAdding(false);
@@ -164,14 +165,21 @@ export function ProductManagement() {
     setStock(product.stock.toString());
     setOptions([{ name: '', values: '' }]); 
     setVariants([{ id: '1', color: '', colorHex: '#000000', sizes: '', image: '' }]);
-    setImages([]);
+    setImages(product.image ? [product.image] : []);
     setEditingId(product.id);
     setIsAdding(true);
   };
 
-  const handleDelete = (id: string) => {
-    setProducts(products.filter(p => p.id !== id));
-    showToast('Product deleted');
+  const handleDelete = async (id: string) => {
+    try {
+      const { error } = await supabase.from('products').delete().eq('id', id);
+      if (error) throw error;
+      showToast('Product deleted');
+      fetchProducts();
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      showToast('Error deleting product');
+    }
   };
 
   return (
@@ -227,7 +235,11 @@ export function ProductManagement() {
                   <td className="px-6 py-4">
                     <div className="flex items-center space-x-4">
                       <div className="w-12 h-12 bg-black/5 rounded-lg flex-shrink-0 overflow-hidden">
-                        {p.image && <img src={p.image} alt={p.name} className="w-full h-full object-cover" />}
+                        {p.image ? (
+                          <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-[10px] text-black/30">No Image</div>
+                        )}
                       </div>
                       <div>
                         <p className="text-sm font-bold">{p.name}</p>
