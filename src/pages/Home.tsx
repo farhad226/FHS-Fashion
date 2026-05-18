@@ -66,8 +66,8 @@ export function Home() {
           <div className="absolute inset-0 bg-black/40" />
         </div>
 
-        <div className="relative z-10 w-full px-[15px] md:px-6 lg:px-[100px] h-full flex items-center">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full">
+        <div className="relative z-10 w-full px-[15px] md:px-6 lg:px-[100px] h-full flex items-end pb-24">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end w-full">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
