@@ -38,6 +38,13 @@ export interface CMSData {
       category: string;
     }>;
   };
+  paymentIntegrations: {
+    paypal: boolean;
+    stripe: boolean;
+    creditCard: boolean;
+    bkash: boolean;
+    nagad: boolean;
+  };
   newsletter: {
     bgImage: string;
     block1Title: string;
@@ -132,6 +139,13 @@ const defaultCMSData: CMSData = {
       { id: 'f7', name: 'Structural Overshirt', price: '$110.00', image: 'https://images.unsplash.com/photo-1617137968427-859247f04322?auto=format&fit=crop&q=80&w=800', tag: 'New Season', category: 'Shirt' },
       { id: 'f8', name: 'Linen Utility Shorts', price: '$75.00', image: 'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?auto=format&fit=crop&q=80&w=800', tag: 'Summer 24', category: 'Pants' },
     ]
+  },
+  paymentIntegrations: {
+    paypal: false,
+    stripe: false,
+    creditCard: false,
+    bkash: false,
+    nagad: false,
   },
   newsletter: {
     bgImage: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&q=80&w=2000",
