@@ -28,6 +28,7 @@ export interface CMSData {
     heading: string;
     buttonText: string;
     buttonUrl: string;
+    availableCategories: string[];
     products: Array<{
       id: string;
       name: string;
@@ -120,6 +121,7 @@ const defaultCMSData: CMSData = {
     heading: "Your fashion, our product",
     buttonText: "More collection",
     buttonUrl: "/shop",
+    availableCategories: ['Jacket', 'Shirt', 'Suit', 'Pants', 'Shoes', 'Wallet', 'Bag', 'Belt', 'Hat', 'Glasses', 'Tie'],
     products: [
       { id: 'f1', name: 'Premium Oxford Shirt', price: '$89.00', image: 'https://images.unsplash.com/photo-1598033129183-c4f50c717658?auto=format&fit=crop&q=80&w=800', tag: 'New Season', category: 'Shirt' },
       { id: 'f2', name: 'Heavyweight Cotton Tee', price: '$45.00', image: 'https://images.unsplash.com/photo-1562157873-818bc0726f68?auto=format&fit=crop&q=80&w=800', tag: 'Essentials', category: 'Shirt' },

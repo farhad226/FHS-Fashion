@@ -281,7 +281,7 @@ export function Home() {
           <h2 className="text-2xl md:text-6xl font-black uppercase tracking-tighter">{cmsData.featuredProducts.heading}</h2>
           
           <div className="flex justify-center flex-wrap gap-8 mt-12 mb-20 text-[10px] font-bold uppercase tracking-widest">
-            {['Jacket', 'Shirt', 'Suit', 'Pants', 'Shoes', 'Wallet', 'Bag', 'Belt', 'Hat', 'Glasses', 'Tie'].map(cat => (
+            {cmsData.featuredProducts.availableCategories.map(cat => (
               <button 
                 key={cat} 
                 onClick={() => setSelectedCategory(cat)}

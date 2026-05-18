@@ -71,8 +71,28 @@ export function StorefrontCMS() {
     setFormData(prev => ({ ...prev, trending: { ...prev.trending, [field]: value } }));
   };
 
-  const updateFeaturedProducts = (field: keyof Omit<CMSData['featuredProducts'], 'products'>, value: string) => {
+  const updateFeaturedProducts = (field: keyof Omit<CMSData['featuredProducts'], 'products' | 'availableCategories'>, value: string) => {
     setFormData(prev => ({ ...prev, featuredProducts: { ...prev.featuredProducts, [field]: value } }));
+  };
+
+  const addCategory = (category: string) => {
+    setFormData(prev => ({
+      ...prev,
+      featuredProducts: {
+        ...prev.featuredProducts,
+        availableCategories: [...prev.featuredProducts.availableCategories, category]
+      }
+    }));
+  };
+
+  const removeCategory = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      featuredProducts: {
+        ...prev.featuredProducts,
+        availableCategories: prev.featuredProducts.availableCategories.filter((_, i) => i !== index)
+      }
+    }));
   };
 
   const handleFeaturedProductChange = (index: number, field: keyof CMSData['featuredProducts']['products'][0], value: string) => {
@@ -759,6 +779,41 @@ export function StorefrontCMS() {
                         onChange={(e) => updateFeaturedProducts('heading', e.target.value)}
                       />
                     </div>
+                  </div>
+                  
+                  <div>
+                     <label className="text-[10px] uppercase font-bold tracking-widest mb-2 block" title="Add a new category and press enter">Manage Categories</label>
+                     <div className="flex flex-wrap gap-2 mb-4">
+                        {formData.featuredProducts.availableCategories.map((cat, index) => (
+                          <div key={index} className="flex items-center gap-1 bg-black text-white px-3 py-1 rounded-full text-[10px] uppercase font-bold tracking-widest">
+                            {cat}
+                            <button onClick={() => removeCategory(index)} className="hover:text-red-300">×</button>
+                          </div>
+                        ))}
+                     </div>
+                     <div className="flex gap-2">
+                       <input 
+                         type="text" 
+                         id="new-category-input"
+                         className="flex-1 bg-[#F9F9F9] border border-black/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors" 
+                         placeholder="New category..."
+                         onKeyDown={(e) => {
+                           if (e.key === 'Enter') {
+                             const target = e.target as HTMLInputElement;
+                             if (target.value) addCategory(target.value);
+                             target.value = '';
+                           }
+                         }}
+                       />
+                       <button 
+                         className="bg-black text-white px-4 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest"
+                         onClick={() => {
+                           const el = document.getElementById('new-category-input') as HTMLInputElement;
+                           if (el.value) addCategory(el.value);
+                           el.value = '';
+                         }}
+                       >Add</button>
+                     </div>
                   </div>
                 </div>
               </div>
