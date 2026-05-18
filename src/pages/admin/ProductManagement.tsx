@@ -13,7 +13,8 @@ const initialProducts = PRODUCTS.map(p => ({
   category: p.category,
   price: p.price,
   stock: 100, // Default stock for imported products
-  status: 'Active' // Default status
+  status: 'Active', // Default status
+  image: p.image // Included image
 }));
 
 export function ProductManagement() {
@@ -21,6 +22,18 @@ export function ProductManagement() {
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const { showToast } = useToast();
+
+  // Persistence
+  useState(() => {
+    const saved = localStorage.getItem('products');
+    if (saved) {
+      setProducts(JSON.parse(saved));
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('products', JSON.stringify(products));
+  }, [products]);
 
   // Form State
   const [productName, setProductName] = useState('');
@@ -119,7 +132,8 @@ export function ProductManagement() {
             category: category,
             price: `$${parseFloat(price.replace('$', '') || '0').toFixed(2)}`,
             stock: parseInt(stock || '0'),
-            status: parseInt(stock || '0') > 10 ? 'Active' : (parseInt(stock || '0') > 0 ? 'Low Stock' : 'Out of Stock')
+            status: parseInt(stock || '0') > 10 ? 'Active' : (parseInt(stock || '0') > 0 ? 'Low Stock' : 'Out of Stock'),
+            image: images.length > 0 ? images[0] : p.image // Save first uploaded image as product image
           };
         }
         return p;
@@ -132,7 +146,8 @@ export function ProductManagement() {
         category: category,
         price: `$${parseFloat(price.replace('$', '') || '0').toFixed(2)}`,
         stock: parseInt(stock || '0'),
-        status: parseInt(stock || '0') > 10 ? 'Active' : (parseInt(stock || '0') > 0 ? 'Low Stock' : 'Out of Stock')
+        status: parseInt(stock || '0') > 10 ? 'Active' : (parseInt(stock || '0') > 0 ? 'Low Stock' : 'Out of Stock'),
+        image: images.length > 0 ? images[0] : '' // Save first uploaded image as product image
       };
       setProducts(prev => [newProduct, ...prev]);
       showToast('Product added successfully!');
@@ -211,7 +226,9 @@ export function ProductManagement() {
                 <tr key={p.id} className="group border-b border-black/[0.03] hover:bg-[#F9F9F9] transition-colors last:border-0">
                   <td className="px-6 py-4">
                     <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-black/5 rounded-lg flex-shrink-0"></div>
+                      <div className="w-12 h-12 bg-black/5 rounded-lg flex-shrink-0 overflow-hidden">
+                        {p.image && <img src={p.image} alt={p.name} className="w-full h-full object-cover" />}
+                      </div>
                       <div>
                         <p className="text-sm font-bold">{p.name}</p>
                         <p className="text-[10px] font-mono text-black/40">#PRD-{p.id.padStart(4, '0')}</p>

@@ -257,8 +257,8 @@ export function Home() {
         </div>
         
         {/* Newsletter Inline Bar */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-[calc(100%-3rem)] max-w-5xl bg-white/95 backdrop-blur-md p-6 flex flex-col md:flex-row items-center justify-between gap-6 rounded-sm">
-          <div className="flex items-center space-x-6">
+        <div className="relative z-10 w-[calc(100%-2rem)] max-w-5xl mx-auto bg-white/95 backdrop-blur-md p-6 flex flex-col items-center justify-between gap-6 rounded-sm mt-8 md:mt-0">
+          <div className="flex flex-col md:flex-row items-center text-center md:text-left space-x-0 md:space-x-6 space-y-4 md:space-y-0">
             <div className="p-3 bg-black/5 rounded-sm">
               <Quote className="w-5 h-5 text-black" />
             </div>
