@@ -74,10 +74,10 @@ export function Home() {
               transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
               className="lg:col-span-8 space-y-8"
             >
-              <h1 className="text-4xl md:text-6xl lg:text-[80px] font-sans font-black uppercase tracking-tighter leading-[0.9] text-white whitespace-pre-line">
+              <h1 className="text-3xl md:text-5xl lg:text-[64px] font-sans font-black uppercase tracking-tighter leading-[0.9] text-white whitespace-pre-line">
                 {cmsData.hero.heading}
               </h1>
-              <div className="max-w-md">
+              <div className="max-w-xl">
                 <p className="text-base md:text-lg text-white/90 mb-10 leading-relaxed font-light whitespace-pre-line">
                   {cmsData.hero.subheading}
                 </p>
